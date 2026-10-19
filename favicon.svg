@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <radialGradient id="bg" cx="35%" cy="30%" r="75%">
+      <stop offset="0%" stop-color="#1F70C1"/>
+      <stop offset="100%" stop-color="#002D9C"/>
+    </radialGradient>
+  </defs>
+
+  <!-- background badge -->
+  <circle cx="32" cy="32" r="31" fill="url(#bg)"/>
+
+  <!-- orbit paths (electron shells) -->
+  <g fill="none" stroke="#A6C8FF" stroke-width="1.3" opacity="0.8">
+    <ellipse cx="32" cy="32" rx="27" ry="10.5" transform="rotate(0 32 32)"/>
+    <ellipse cx="32" cy="32" rx="27" ry="10.5" transform="rotate(60 32 32)"/>
+    <ellipse cx="32" cy="32" rx="27" ry="10.5" transform="rotate(120 32 32)"/>
+  </g>
+
+  <!-- wings (behind body, subtle) -->
+  <ellipse cx="21.5" cy="39" rx="4.4" ry="7.6" fill="#B3CCFA" opacity="0.9" transform="rotate(-18 21.5 39)"/>
+  <ellipse cx="42.5" cy="39" rx="4.4" ry="7.6" fill="#B3CCFA" opacity="0.9" transform="rotate(18 42.5 39)"/>
+
+  <!-- owl body -->
+  <ellipse cx="32" cy="35" rx="11.5" ry="13.5" fill="#F4F4F4"/>
+
+  <!-- ear tufts -->
+  <path d="M22.5,25 L19,16 L26.5,22.5 Z" fill="#F4F4F4"/>
+  <path d="M41.5,25 L45,16 L37.5,22.5 Z" fill="#F4F4F4"/>
+
+  <!-- eyes -->
+  <circle cx="26.8" cy="32.5" r="4.6" fill="#002D9C"/>
+  <circle cx="37.2" cy="32.5" r="4.6" fill="#002D9C"/>
+  <circle cx="26.8" cy="32.5" r="3.3" fill="#F4F4F4"/>
+  <circle cx="37.2" cy="32.5" r="3.3" fill="#F4F4F4"/>
+  <circle cx="26.8" cy="32.5" r="1.6" fill="#002D9C"/>
+  <circle cx="37.2" cy="32.5" r="1.6" fill="#002D9C"/>
+
+  <!-- beak -->
+  <path d="M32,34.5 L29.3,39 L34.7,39 Z" fill="#002D9C"/>
+
+  <!-- feet -->
+  <path d="M27,47.5 l-1.6,3.2 M27,47.5 l0,3.4 M27,47.5 l1.6,3.2" stroke="#F4F4F4" stroke-width="1.3" fill="none" stroke-linecap="round"/>
+  <path d="M37,47.5 l-1.6,3.2 M37,47.5 l0,3.4 M37,47.5 l1.6,3.2" stroke="#F4F4F4" stroke-width="1.3" fill="none" stroke-linecap="round"/>
+
+  <!-- electrons -->
+  <g>
+    <circle cx="59" cy="32" r="3" fill="#FFFFFF" opacity="0.35" transform="rotate(0 32 32)"/>
+    <circle cx="59" cy="32" r="1.9" fill="#78A9FF" transform="rotate(0 32 32)"/>
+  </g>
+  <g>
+    <circle cx="59" cy="32" r="3" fill="#FFFFFF" opacity="0.35" transform="rotate(60 32 32)"/>
+    <circle cx="59" cy="32" r="1.9" fill="#78A9FF" transform="rotate(60 32 32)"/>
+  </g>
+  <g>
+    <circle cx="59" cy="32" r="3" fill="#FFFFFF" opacity="0.35" transform="rotate(120 32 32)"/>
+    <circle cx="59" cy="32" r="1.9" fill="#78A9FF" transform="rotate(120 32 32)"/>
+  </g>
+</svg>
