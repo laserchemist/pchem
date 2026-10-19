@@ -1,0 +1,158 @@
+[
+ {
+  "question": "Why is C_p larger than C_v for a gas?",
+  "type": "multiple_choice",
+  "answers": [
+   {
+    "answer": "At constant pressure, some of the heat goes into expansion work on the surroundings",
+    "correct": true,
+    "feedback": "Right — at constant P the gas expands as it warms, so part of the heat leaves as work."
+   },
+   {
+    "answer": "Molecules rotate faster at constant pressure",
+    "correct": false,
+    "feedback": "Rotational energy depends on T, not on whether P or V is held fixed."
+   },
+   {
+    "answer": "The gas has more vibrational modes at constant pressure",
+    "correct": false,
+    "feedback": "The number of modes is a property of the molecule, not of the process."
+   },
+   {
+    "answer": "Pressure adds potential energy to each molecule",
+    "correct": false,
+    "feedback": "For an ideal gas U depends only on T; the difference is the PV work."
+   }
+  ]
+ },
+ {
+  "question": "Equipartition predicts γ for a rigid diatomic molecule such as N₂ to be:",
+  "type": "multiple_choice",
+  "answers": [
+   {
+    "answer": "7/5 = 1.40",
+    "correct": true,
+    "feedback": "C_v = 3/2 R + R = 5/2 R, so γ = 1 + 2/5."
+   },
+   {
+    "answer": "5/3 = 1.67",
+    "correct": false,
+    "feedback": "That is the monatomic value (translation only)."
+   },
+   {
+    "answer": "9/7 = 1.29",
+    "correct": false,
+    "feedback": "That would include the vibration fully excited."
+   },
+   {
+    "answer": "15/13 = 1.15",
+    "correct": false,
+    "feedback": "That is fully-vibrating CO₂."
+   }
+  ]
+ },
+ {
+  "question": "In the Clément–Desormes experiment, which step is (approximately) adiabatic?",
+  "type": "multiple_choice",
+  "answers": [
+   {
+    "answer": "The rapid expansion when the stopper is briefly removed (1 → 2)",
+    "correct": true,
+    "feedback": "It happens so fast that there is no time for heat to flow."
+   },
+   {
+    "answer": "The slow warming back to bath temperature (2 → 3)",
+    "correct": false,
+    "feedback": "That step is isochoric, and heat flows in from the bath."
+   },
+   {
+    "answer": "Filling the carboy with gas",
+    "correct": false,
+    "feedback": "The gas is then left to come to the bath temperature, so heat flows."
+   },
+   {
+    "answer": "Every step",
+    "correct": false,
+    "feedback": "Step 2 → 3 needs heat to flow in, or P would not rise."
+   }
+  ]
+ },
+ {
+  "question": "Why does P rise from P₂ to P₃ after the stopper is replaced?",
+  "type": "multiple_choice",
+  "answers": [
+   {
+    "answer": "The gas cooled during the expansion and warms back to bath temperature at constant volume",
+    "correct": true,
+    "feedback": "At constant V and n, P ∝ T."
+   },
+   {
+    "answer": "More gas leaks in from the cylinder",
+    "correct": false,
+    "feedback": "The carboy is sealed during this step."
+   },
+   {
+    "answer": "The manometer oil evaporates",
+    "correct": false,
+    "feedback": "The oil has negligible vapor pressure."
+   },
+   {
+    "answer": "The gas becomes non-ideal",
+    "correct": false,
+    "feedback": "Non-ideality is tiny at 1 atm; this is a temperature effect."
+   }
+  ]
+ },
+ {
+  "question": "CO₂ has a measured γ ≈ 1.29 at room temperature, between the rigid (1.40) and fully vibrating (1.15) predictions. Mainly because:",
+  "type": "multiple_choice",
+  "answers": [
+   {
+    "answer": "Its low-frequency bending modes (667 cm⁻¹) are partly excited at 295 K, but its stretches are mostly frozen out",
+    "correct": true,
+    "feedback": "Θ_v ≈ 960 K for the bend, so the Einstein function gives ≈ 0.44 R per bending mode."
+   },
+   {
+    "answer": "CO₂ is nonlinear, so it has 3 rotational degrees of freedom",
+    "correct": false,
+    "feedback": "O=C=O is linear: 2 rotations."
+   },
+   {
+    "answer": "CO₂ is strongly non-ideal at 1 atm",
+    "correct": false,
+    "feedback": "The van der Waals correction is under 0.5% — too small."
+   },
+   {
+    "answer": "CO₂ dissolves in the manometer oil",
+    "correct": false,
+    "feedback": "Not the reason; this is a molecular property."
+   }
+  ]
+ },
+ {
+  "question": "Which formula correctly uses the three pressures?",
+  "type": "multiple_choice",
+  "answers": [
+   {
+    "answer": "γ = ln(P₁/P₂) / ln(P₁/P₃)",
+    "correct": true,
+    "feedback": "From P₁V₁^γ = P₂V₂^γ and P₁V₁ = P₃V₂."
+   },
+   {
+    "answer": "γ = ln(P₁/P₃) / ln(P₁/P₂)",
+    "correct": false,
+    "feedback": "That is 1/γ — it would be less than 1."
+   },
+   {
+    "answer": "γ = P₃/P₁",
+    "correct": false,
+    "feedback": "That ratio is close to 1 and does not involve the adiabatic step."
+   },
+   {
+    "answer": "γ = (P₁ − P₃)/(P₁ − P₂)",
+    "correct": false,
+    "feedback": "Upside down: the approximation is (P₁ − P₂)/(P₁ − P₃)."
+   }
+  ]
+ }
+]
