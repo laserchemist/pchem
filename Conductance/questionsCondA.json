@@ -1,0 +1,158 @@
+[
+ {
+  "question": "What does the cell constant k = l/A let you do?",
+  "type": "multiple_choice",
+  "answers": [
+   {
+    "answer": "Convert a measured conductance G into the conductivity κ of the solution (κ = kG)",
+    "correct": true,
+    "feedback": "Right — k absorbs the cell geometry, so κ depends only on the solution."
+   },
+   {
+    "answer": "Correct the conductance for the water",
+    "correct": false,
+    "feedback": "That is the separate subtraction G − G_w."
+   },
+   {
+    "answer": "Convert concentration from mol/L to mol/m³",
+    "correct": false,
+    "feedback": "That is just a factor of 1000."
+   },
+   {
+    "answer": "Find Λ° by extrapolation",
+    "correct": false,
+    "feedback": "Extrapolation uses Kohlrausch's law, after κ is known."
+   }
+  ]
+ },
+ {
+  "question": "Why is the molar conductivity of HCl so much larger than that of NaCl?",
+  "type": "multiple_choice",
+  "answers": [
+   {
+    "answer": "H⁺ moves by proton hopping along hydrogen bonds (Grotthuss mechanism), so its mobility is very high",
+    "correct": true,
+    "feedback": "Yes — U(H⁺) is about 7 × U(Na⁺)."
+   },
+   {
+    "answer": "HCl releases more ions per mole than NaCl",
+    "correct": false,
+    "feedback": "Both are 1:1 electrolytes: one cation and one anion."
+   },
+   {
+    "answer": "Cl⁻ moves faster in acid",
+    "correct": false,
+    "feedback": "λ°(Cl⁻) is the same in both — that's independent migration."
+   },
+   {
+    "answer": "H⁺ has a larger hydration shell",
+    "correct": false,
+    "feedback": "A large hydration shell would slow an ion down."
+   }
+  ]
+ },
+ {
+  "question": "A plot of Λm against √c is a straight line for which solution?",
+  "type": "multiple_choice",
+  "answers": [
+   {
+    "answer": "A dilute strong electrolyte such as NaCl",
+    "correct": true,
+    "feedback": "Kohlrausch's law: Λm = Λ° − K√c."
+   },
+   {
+    "answer": "Acetic acid",
+    "correct": false,
+    "feedback": "Its α changes with c, so Λm curves sharply upward near c = 0."
+   },
+   {
+    "answer": "Any electrolyte at any concentration",
+    "correct": false,
+    "feedback": "The law holds only in dilute solution."
+   },
+   {
+    "answer": "Pure water",
+    "correct": false,
+    "feedback": "Water's conductance comes from tiny H⁺/OH⁻ concentrations, not a dilution series."
+   }
+  ]
+ },
+ {
+  "question": "Λ°(HAc) is found from Λ°(HCl) + Λ°(NaAc) − Λ°(NaCl). This works because:",
+  "type": "multiple_choice",
+  "answers": [
+   {
+    "answer": "At infinite dilution each ion contributes independently, so the Na⁺ and Cl⁻ terms cancel",
+    "correct": true,
+    "feedback": "That is Kohlrausch's law of independent migration of ions."
+   },
+   {
+    "answer": "Acetic acid is fully ionized at infinite dilution, so its Λ° can be extrapolated directly",
+    "correct": false,
+    "feedback": "It is fully ionized there, but you can't reach that limit by a straight-line extrapolation."
+   },
+   {
+    "answer": "NaCl is a weak electrolyte",
+    "correct": false,
+    "feedback": "NaCl is a strong electrolyte."
+   },
+   {
+    "answer": "HCl and NaAc react to form HAc",
+    "correct": false,
+    "feedback": "It is a bookkeeping of ionic contributions, not a reaction."
+   }
+  ]
+ },
+ {
+  "question": "As an acetic acid solution is diluted, the degree of ionization α:",
+  "type": "multiple_choice",
+  "answers": [
+   {
+    "answer": "Increases, approaching 1 at infinite dilution",
+    "correct": true,
+    "feedback": "Le Châtelier: dilution favors the side with more particles (H⁺ + Ac⁻)."
+   },
+   {
+    "answer": "Decreases",
+    "correct": false,
+    "feedback": "Kc = α²c/(1−α) is constant, so smaller c needs larger α."
+   },
+   {
+    "answer": "Stays constant",
+    "correct": false,
+    "feedback": "Only Ka (and roughly Kc) stays constant, not α."
+   },
+   {
+    "answer": "Becomes negative",
+    "correct": false,
+    "feedback": "α is a fraction between 0 and 1."
+   }
+  ]
+ },
+ {
+  "question": "In the plot of log Kc against √(αc), the intercept gives:",
+  "type": "multiple_choice",
+  "answers": [
+   {
+    "answer": "log Ka, the thermodynamic acidity constant at zero ionic strength",
+    "correct": true,
+    "feedback": "At zero ionic strength γ± = 1, so Kc = Ka."
+   },
+   {
+    "answer": "The Debye–Hückel constant A",
+    "correct": false,
+    "feedback": "The slope is 2A."
+   },
+   {
+    "answer": "Λ°(HAc)",
+    "correct": false,
+    "feedback": "Λ° came from independent migration, before this plot."
+   },
+   {
+    "answer": "The cell constant",
+    "correct": false,
+    "feedback": "The cell constant came from the KCl standard."
+   }
+  ]
+ }
+]
