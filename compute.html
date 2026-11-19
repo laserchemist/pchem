@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Computational Chemistry — Physical Chemistry Lab Hub</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="favicon-180.png">
+  <style>
+    * { box-sizing: border-box; }
+    :root {
+      --ibm-blue: #0F62FE;
+      --ibm-blue-dark: #002D9C;
+      --black: #161616;
+      --gray: #262626;
+      --silver: #A8A8A8;
+      --silver-light: #E8E8E8;
+      --white: #FFFFFF;
+      --green: #42BE65;
+    }
+    html { -webkit-text-size-adjust: 100%; overflow-x: hidden; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      max-width: 960px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 24px 20px 48px;
+      line-height: 1.5;
+      background: var(--ibm-blue-dark);
+      color: var(--white);
+      overflow-x: hidden;
+    }
+    a { color: inherit; }
+    hr { border: none; border-top: 1px solid rgba(255,255,255,0.25); margin: 24px 0; }
+    ul { padding-left: 1.4em; margin: 4px 0; }
+    li { margin: 3px 0; }
+    h2 { color: var(--silver-light); margin: 28px 0 6px; }
+    .shell { background: var(--black); padding: 24px 28px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.25); }
+    .hero { background: linear-gradient(135deg, var(--ibm-blue-dark), var(--ibm-blue)); border-radius: 14px;
+            padding: 28px 32px; margin-bottom: 18px; box-shadow: 0 4px 24px rgba(15,98,254,0.45); border: 1px solid var(--silver); }
+    .hero .big { font-size: 2.2em; font-weight: 900; display: block; line-height: 1.2; }
+    .hero .sub { color: var(--silver-light); font-size: 1.15em; font-weight: 600; text-shadow: 0 1px 4px rgba(0,0,0,0.5); }
+    .nav-tabs { margin: 4px 0 20px; }
+    .nav-tab { display: inline-block; padding: 8px 18px; margin: 4px 6px 4px 0; border-radius: 999px;
+               font-weight: 700; font-size: 0.95em; text-decoration: none; border: 1px solid var(--silver); }
+    .nav-tab.active { background: var(--ibm-blue); color: var(--white); }
+    .nav-tab.inactive { background: transparent; color: var(--silver-light); }
+    .session-note { color: var(--silver); font-size: 0.95em; margin: 0 0 10px; }
+
+    /* one row per computational part: button on the left, topics and goals on the right */
+    .part { display: flex; gap: 18px; align-items: flex-start; background: var(--gray); border: 1px solid #393939;
+            border-radius: 12px; padding: 14px; margin: 12px 0; }
+    .lab-btn { flex: 0 0 270px; max-width: 100%; background: var(--ibm-blue); color: var(--white); border-radius: 10px;
+               padding: 14px 20px; box-shadow: 2px 2px 6px rgba(0,0,0,0.35); border: 1px solid var(--silver);
+               text-decoration: none; display: block; }
+    .lab-btn:hover, .lab-btn:focus-visible { background: #0353E9; outline: 2px solid var(--white); outline-offset: 2px; }
+    .lab-btn .num { font-size: 0.85em; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; opacity: 0.85; }
+    .lab-btn .lab-title { display: block; font-size: 1.2em; font-weight: 700; line-height: 1.3; margin: 2px 0 6px; }
+    .lab-btn .meta { font-size: 0.9em; opacity: 0.9; }
+    .info { flex: 1 1 auto; min-width: 0; font-size: 0.97em; }
+    .info p { margin: 0 0 6px; }
+    .info .label { color: var(--silver-light); font-weight: 700; }
+    .chip { display: inline-block; font-size: 0.78em; font-weight: 700; padding: 2px 10px; border-radius: 999px;
+            margin-top: 8px; border: 1px solid var(--green); color: var(--green); }
+    @media (max-width: 640px) {
+      .part { flex-direction: column; }
+      .lab-btn { flex-basis: auto; width: 100%; }
+      .hero { padding: 20px; }
+      .hero .big { font-size: 1.7em; }
+      .shell { padding: 18px 16px; }
+    }
+  </style>
+</head>
+<body>
+<div class="shell">
+<div class="hero">
+  <span class="big">💻 Computational Chemistry</span>
+  <span class="sub">From electrons to infrared spectra — CHEM 3376</span>
+</div>
+
+<div class="nav-tabs">
+  <a class="nav-tab inactive" href="./index.html">🏠 Labs</a>
+  <a class="nav-tab active" href="./compute.html">💻 Computational Chemistry</a>
+</div>
+
+<p>The computational lab is split into short parts that build on each other. You start with the hydrogen atom, where
+the exact answer is known, and finish by running molecular dynamics on a machine-learned surface to explain why
+CO₂ absorbs infrared light. Every calculation runs in Python on the hub with <a href="https://pyscf.org" target="_blank">PySCF</a>;
+no prior programming experience is needed.</p>
+<p><em>Click a button to open that part on the hub. Do the parts in order: later parts use results from earlier ones.</em></p>
+
+<hr>
+
+<h2>Session 1 — Electrons and bonds</h2>
+<p class="session-note">One 3-hour lab session: Part 1, then Parts 2 and 3.</p>
+
+<div class="part">
+  <a class="lab-btn" target="_blank" href="https://temple.2i2c.cloud/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Flaserchemist%2Fpchem&urlpath=lab%2Ftree%2Fpchem%2Fcomp_chem%2Fcomp01_H2_O2%2Fcomp01_H2_O2.ipynb&branch=main">
+    <span class="num">Part 1</span>
+    <span class="lab-title">⚛️ From the Hydrogen Atom to O₂</span>
+    <span class="meta">H · H₂⁺ · H₂ · O₂ with PySCF</span>
+  </a>
+  <div class="info">
+    <p><span class="label">Topics:</span> hydrogen radial wavefunctions and their Gaussian (STO-nG) approximations; the
+      variational principle and Hylleraas's helium calculation; H₂⁺ bonding and antibonding orbitals; electron correlation
+      in H₂ (Hartree–Fock vs. full CI); O₂ with density functional theory.</p>
+    <p><span class="label">You will be able to:</span></p>
+    <ul>
+      <li>explain why every basis set is built from Gaussians, and what they miss at the nucleus;</li>
+      <li>use the variational principle to judge which approximate energy is better;</li>
+      <li>compute a bond length, bond energy and force constant from a potential-energy curve;</li>
+      <li>explain why O₂ is a triplet (magnetic) and why it does not absorb infrared light.</li>
+    </ul>
+    <span class="chip">✓ Answer checks · Abstract &amp; Conclusions · Submit</span>
+  </div>
+</div>
+
+<div class="part">
+  <a class="lab-btn" target="_blank" href="https://temple.2i2c.cloud/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Flaserchemist%2Fpchem&urlpath=lab%2Ftree%2Fpchem%2Fcomp_chem%2Fnotebooks%2F02_ab_initio_CO.ipynb&branch=main">
+    <span class="num">Part 2</span>
+    <span class="lab-title">🎯 Ab Initio Theory and Basis Sets: CO</span>
+    <span class="meta">HF → MP2 → CCSD(T) — about 60 min</span>
+  </a>
+  <div class="info">
+    <p><span class="label">Topics:</span> the ab initio hierarchy (Hartree–Fock, MP2, CCSD(T)); correlation energy;
+      correlation-consistent basis sets cc-pVXZ; the CO potential-energy curve and its tiny dipole moment.</p>
+    <p><span class="label">You will be able to:</span></p>
+    <ul>
+      <li>describe what each level of theory adds and what it costs (N⁴, N⁵, N⁷);</li>
+      <li>show a result converging as the method and basis set improve;</li>
+      <li>connect the change of dipole with bond length, dμ/dr, to IR intensity.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="part">
+  <a class="lab-btn" target="_blank" href="https://temple.2i2c.cloud/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Flaserchemist%2Fpchem&urlpath=lab%2Ftree%2Fpchem%2Fcomp_chem%2Fnotebooks%2F03_vibrational_levels.ipynb&branch=main">
+    <span class="num">Part 3</span>
+    <span class="lab-title">〰️ Quantum Vibrational Levels</span>
+    <span class="meta">Schrödinger equation on a grid — about 50 min</span>
+  </a>
+  <div class="info">
+    <p><span class="label">Topics:</span> the finite-difference method for the vibrational Schrödinger equation on the
+      CCSD(T) curve of CO; anharmonicity; zero-point energy; overtones; isotope shifts.</p>
+    <p><span class="label">You will be able to:</span></p>
+    <ul>
+      <li>turn a Hamiltonian into a matrix and find its energy levels as eigenvalues;</li>
+      <li>explain why the observed fundamental (2143 cm⁻¹) lies below the harmonic value;</li>
+      <li>predict how levels shift for <sup>13</sup>CO.</li>
+    </ul>
+  </div>
+</div>
+
+<h2>Session 2 — Molecules in motion: CO₂ and the greenhouse effect</h2>
+<p class="session-note">One 3-hour lab session: Parts 4, 5 and 6.</p>
+
+<div class="part">
+  <a class="lab-btn" target="_blank" href="https://temple.2i2c.cloud/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Flaserchemist%2Fpchem&urlpath=lab%2Ftree%2Fpchem%2Fcomp_chem%2Fnotebooks%2F04_CO2_harmonic_IR.ipynb&branch=main">
+    <span class="num">Part 4</span>
+    <span class="lab-title">🌍 CO₂ Normal Modes and IR</span>
+    <span class="meta">Hessian · normal modes — about 60 min</span>
+  </a>
+  <div class="info">
+    <p><span class="label">Topics:</span> equilibrium geometry; the mass-weighted Hessian and normal modes (3N − 5 for a
+      linear molecule); IR intensities from the change of dipole; symmetry selection rules.</p>
+    <p><span class="label">You will be able to:</span></p>
+    <ul>
+      <li>find vibrational frequencies by diagonalising a mass-weighted Hessian;</li>
+      <li>decide from symmetry which modes are IR-active;</li>
+      <li>explain why CO₂ absorbs infrared light when O₂ does not (the bend).</li>
+    </ul>
+  </div>
+</div>
+
+<div class="part">
+  <a class="lab-btn" target="_blank" href="https://temple.2i2c.cloud/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Flaserchemist%2Fpchem&urlpath=lab%2Ftree%2Fpchem%2Fcomp_chem%2Fnotebooks%2F05_ML_potential_CO2.ipynb&branch=main">
+    <span class="num">Part 5</span>
+    <span class="lab-title">🤖 A Machine-Learned Surface</span>
+    <span class="meta">Gaussian-process regression — about 60 min</span>
+  </a>
+  <div class="info">
+    <p><span class="label">Topics:</span> learning a potential-energy surface and dipole model for CO₂ from a few hundred DFT
+      calculations; symmetry-adapted coordinates; training and held-out test sets; prediction uncertainty.</p>
+    <p><span class="label">You will be able to:</span></p>
+    <ul>
+      <li>build the physics (translation, rotation, identical atoms) into a model's inputs;</li>
+      <li>judge a fit on data it has never seen, not on its training error;</li>
+      <li>check a learned surface against physical quantities such as harmonic frequencies.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="part">
+  <a class="lab-btn" target="_blank" href="https://temple.2i2c.cloud/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Flaserchemist%2Fpchem&urlpath=lab%2Ftree%2Fpchem%2Fcomp_chem%2Fnotebooks%2F06_MD_IR_CO2.ipynb&branch=main">
+    <span class="num">Part 6</span>
+    <span class="lab-title">🎞️ Molecular Dynamics and the IR Spectrum</span>
+    <span class="meta">Velocity Verlet · Fourier transform — about 60 min</span>
+  </a>
+  <div class="info">
+    <p><span class="label">Topics:</span> classical molecular dynamics on the learned surface; the velocity Verlet integrator
+      and energy conservation; the IR spectrum as the Fourier transform of the dipole μ(t); rotational P and R branches.</p>
+    <p><span class="label">You will be able to:</span></p>
+    <ul>
+      <li>write an integrator for Newton's equations and test it by energy conservation;</li>
+      <li>compute a spectrum from a trajectory and compare it with the harmonic sticks of Part 4;</li>
+      <li>explain the shape of a gas-phase IR band.</li>
+    </ul>
+  </div>
+</div>
+
+<h2>Project week — Your own molecule</h2>
+<p class="session-note">Independent work, ending in an abstract and one or two figures.</p>
+
+<div class="part">
+  <a class="lab-btn" target="_blank" href="https://temple.2i2c.cloud/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Flaserchemist%2Fpchem&urlpath=lab%2Ftree%2Fpchem%2Fcomp_chem%2Fnotebooks%2F07_project_template.ipynb&branch=main">
+    <span class="num">Part 7</span>
+    <span class="lab-title">🔬 Project: Electrons to an IR Spectrum</span>
+    <span class="meta">N₂O, OCS, HCN, CS₂, H₂O or SO₂</span>
+  </a>
+  <div class="info">
+    <p><span class="label">Topics:</span> the full CO₂ workflow for a molecule you choose: geometry, normal modes and IR
+      intensities, a learned surface and dipole, MD at two temperatures, and the spectrum compared with experiment.</p>
+    <p><span class="label">You will be able to:</span></p>
+    <ul>
+      <li>plan and carry out a complete computational study on your own;</li>
+      <li>compare harmonic, dynamical and experimental frequencies and explain the differences;</li>
+      <li>report the result as a short scientific abstract with figures.</li>
+    </ul>
+  </div>
+</div>
+
+<hr>
+<h2>🔗 Resources</h2>
+<ul>
+  <li><a href="./index.html">Back to the Physical Chemistry Lab Hub</a></li>
+  <li><a href="https://pyscf.org" target="_blank">PySCF documentation</a></li>
+  <li><a href="https://www.mn.uio.no/hylleraas/english/about/hylleraas/" target="_blank">Egil Hylleraas (Hylleraas Centre, University of Oslo)</a></li>
+  <li><a href="https://github.com/laserchemist/pchem/tree/main/comp_chem" target="_blank">comp_chem on GitHub</a></li>
+</ul>
+</div>
+</body>
+</html>
