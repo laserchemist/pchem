@@ -1,0 +1,158 @@
+[
+ {
+  "question": "Why can we compute the electronic energy with the nuclei held fixed?",
+  "type": "multiple_choice",
+  "answers": [
+   {
+    "answer": "Nuclei are thousands of times heavier than electrons, so the electrons adjust almost instantly as the nuclei move (Born–Oppenheimer)",
+    "correct": true,
+    "feedback": "Right — the electronic energy at each fixed geometry gives the potential energy curve the nuclei move on."
+   },
+   {
+    "answer": "Nuclei do not move at room temperature",
+    "correct": false,
+    "feedback": "They do: that motion is molecular vibration, the subject of the next labs."
+   },
+   {
+    "answer": "Electrons and nuclei never interact",
+    "correct": false,
+    "feedback": "The electron–nucleus attraction is what holds the molecule together."
+   },
+   {
+    "answer": "PySCF cannot handle moving nuclei",
+    "correct": false,
+    "feedback": "It is a physical approximation, not a software limitation."
+   }
+  ]
+ },
+ {
+  "question": "Every H-atom energy you computed was above −0.5 hartree. Why?",
+  "type": "multiple_choice",
+  "answers": [
+   {
+    "answer": "The variational principle: any approximate wavefunction gives an energy at or above the true ground-state energy",
+    "correct": true,
+    "feedback": "Yes — a larger basis lowers the energy toward, but never below, the exact value."
+   },
+   {
+    "answer": "Rounding errors in the computer",
+    "correct": false,
+    "feedback": "The errors are far too large and systematic for rounding."
+   },
+   {
+    "answer": "Hartree–Fock neglects electron correlation",
+    "correct": false,
+    "feedback": "With one electron there is no correlation: HF is exact apart from the basis set."
+   },
+   {
+    "answer": "The nucleus is treated as infinitely heavy",
+    "correct": false,
+    "feedback": "That approximation is built into the exact −0.5 hartree reference as well."
+   }
+  ]
+ },
+ {
+  "question": "What holds the single electron of H₂⁺ in a bond?",
+  "type": "multiple_choice",
+  "answers": [
+   {
+    "answer": "Electron density built up between the nuclei is attracted by both protons at once",
+    "correct": true,
+    "feedback": "Right — the one-electron bond is the simplest example of covalent bonding."
+   },
+   {
+    "answer": "A pair of electrons with opposite spins",
+    "correct": false,
+    "feedback": "H₂⁺ has only one electron, yet it is bound by 2.8 eV."
+   },
+   {
+    "answer": "Attraction between the two protons",
+    "correct": false,
+    "feedback": "The protons repel each other: that is the rising V_nn curve."
+   },
+   {
+    "answer": "Electron–electron correlation",
+    "correct": false,
+    "feedback": "There is only one electron, so there is no correlation."
+   }
+  ]
+ },
+ {
+  "question": "Restricted Hartree–Fock for H₂ gives far too high an energy at large R because:",
+  "type": "multiple_choice",
+  "answers": [
+   {
+    "answer": "Its wavefunction is half ionic (H⁺ + H⁻) at every bond length",
+    "correct": true,
+    "feedback": "Yes — both electrons share one orbital, so they are too often on the same atom."
+   },
+   {
+    "answer": "The basis set is too small at large R",
+    "correct": false,
+    "feedback": "Full CI in the same basis dissociates correctly."
+   },
+   {
+    "answer": "The nuclei repel too strongly",
+    "correct": false,
+    "feedback": "Nuclear repulsion is exact and goes to zero at large R."
+   },
+   {
+    "answer": "Spin–orbit coupling becomes important",
+    "correct": false,
+    "feedback": "It is negligible for hydrogen."
+   }
+  ]
+ },
+ {
+  "question": "Why is the ground state of O₂ a triplet?",
+  "type": "multiple_choice",
+  "answers": [
+   {
+    "answer": "Its last two electrons occupy two degenerate π* orbitals with parallel spins (Hund's rule)",
+    "correct": true,
+    "feedback": "Right — two unpaired electrons make O₂ paramagnetic."
+   },
+   {
+    "answer": "O₂ has an odd number of electrons",
+    "correct": false,
+    "feedback": "It has 16, an even number."
+   },
+   {
+    "answer": "Oxygen atoms are singlets",
+    "correct": false,
+    "feedback": "An O atom is itself a triplet (³P)."
+   },
+   {
+    "answer": "Its bond order is 3",
+    "correct": false,
+    "feedback": "The bond order of O₂ is 2."
+   }
+  ]
+ },
+ {
+  "question": "Why does the O₂ stretching vibration not absorb infrared light?",
+  "type": "multiple_choice",
+  "answers": [
+   {
+    "answer": "The dipole moment is zero at every bond length, so it does not change as the bond vibrates",
+    "correct": true,
+    "feedback": "Yes — symmetry (an inversion centre) forces μ = 0, so dμ/dR = 0."
+   },
+   {
+    "answer": "The vibration is too slow",
+    "correct": false,
+    "feedback": "O₂ vibrates near 1580 cm⁻¹, well inside the infrared."
+   },
+   {
+    "answer": "O₂ is a triplet",
+    "correct": false,
+    "feedback": "Spin does not decide IR activity; NO is a radical and absorbs IR."
+   },
+   {
+    "answer": "The bond is too strong",
+    "correct": false,
+    "feedback": "CO has a stronger bond and absorbs strongly at 2143 cm⁻¹."
+   }
+  ]
+ }
+]
