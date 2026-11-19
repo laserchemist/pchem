@@ -53,7 +53,10 @@ import matplotlib
 import matplotlib.pyplot as plt
 from cycler import cycler
 get_ipython().run_line_magic("matplotlib", "inline")
-from gofer.ok import check
+try:
+    from gofer.ok import check          # gofer-based labs; labs using pchem_check.py don't need it
+except ImportError:
+    pass
 from IPython.display import display, HTML
 from jupyterquiz import display_quiz
 

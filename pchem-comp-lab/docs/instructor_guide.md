@@ -26,7 +26,7 @@ fit, a physically motivated dipole model, and classical (not ring-polymer) dynam
 | | content | approx. time | notes |
 |---|---|---|---|
 | **Session 1** | Introduction (15 min): PES, DFT vs wavefunction methods, Jupyter basics | | running the first worked example (H atom) together helps |
-| | Notebook 1 (`comp01_H2_O2`): H atom → H₂⁺ → H₂ → O₂ | 75 min | 1 min of compute; course format with auto-checks |
+| | Notebook 1 (`comp01_H2_O2`): H atom (radial functions, Gaussians, variational principle) → H₂⁺ → H₂ → O₂ | 100 min | 1 min of compute; course format with auto-checks |
 | | Notebook 2: CO ab initio and basis sets | 60 min | 2 min of compute |
 | | Notebook 3: vibrational levels | 50 min | almost no compute; the most mathematical notebook |
 | **Session 2** | Brief recap (10 min): normal modes, IR selection rule | | |
@@ -76,25 +76,53 @@ Reference values below are from the executed instructor notebooks (B3LYP/def2-SV
 agree closely; random sampling changes the ML and MD numbers slightly.
 
 ### Notebook 1 (`comp01_H2_O2`): from the hydrogen atom to O₂
-Course format: the initialization cell, 💡 hint dropdowns, `x = ...` blanks (one to four per question), a 6-question
-practice quiz (`questionsComp01.json`), a reflection, and `lab.score()` at the end.
+Course format: the initialization cell, 💡 hint dropdowns, `x = ...` blanks (one to four per question), an **Abstract** cell
+at the top (written last) and a **Conclusions** section at the end, an 11-question practice quiz (`questionsComp01.json`), a
+reflection, `lab.score()`, and the course **Submit** button (`lab.submit(name, lab_id='Comp01')`).
 
 **Answer checks.** Instead of gofer, the lab uses its own checker, like the Neighbor Games' `neighbor_check`:
-`lab.check('3.1')` after each question (18 checks, 5 of them discussion answers checked for length in the saved
-notebook). The engine is `pchem_check.py`, reusable in any lab; this lab's tests are in `checks_comp01.py`.
+`lab.check('4.2')` after each question (25 checks; 7 of them are written answers checked for length in the saved
+notebook: abstract ≥ 400 characters, conclusions `7c` ≥ 300, four discussions and the reflection ≥ 60). The engine is
+`pchem_check.py`, reusable in any lab; this lab's answers and tests are in the answer key `answers_comp01.json`.
 - Each check stops at the first failing test and shows a hint written for that mistake (e.g. "charge = 1: two protons,
   one electron"), so students can fix the cell and try again. There is no penalty for retrying.
 - Every attempt is recorded with a time stamp in `.comp01_check_log.json` next to the notebook, so the record
   survives a kernel restart. `lab.score()` shows each question's status, attempts, and the attempt on which it was first
-  correct, with the total (e.g. "16 of 18 correct, 12 on the first try").
+  correct, with the total (e.g. "22 of 25 correct, 17 on the first try").
 - The record is a plain file a determined student could edit; it is meant for feedback and self-monitoring. For grading,
   re-run the notebook, or collect the log files (one per student folder) if you want attempt counts.
-- To add or change a check, edit `checks_comp01.py`: each test is a one-line `lambda ns: ...` (ns is the notebook's
-  variables) with the hint to show when it is False.
+- **The answer key.** Edit the plain `src/comp01_H2_O2/answers_comp01.json` and rebuild. Each test is a Python
+  expression in the notebook's variables, either `{"value": "De_h2p", "answer": 2.787, "tol": 0.05}` or
+  `{"assert": "len(E_h2p) == len(R_grid)"}`, with a `hint` and a list of **typical wrong answers**
+  (`{"answer": 16.39, "feedback": "You left out E(H)."}` or `{"when": "value > 100", "feedback": ...}`). The checker also
+  recognizes a wrong sign, the factors in `common_mistakes` (27.2 for hartree/eV, 0.529 for bohr/Å, 1000, 2π), a
+  missing `return`, a leftover `...` and an array index used as a value. The full format is in the docstring of
+  `pchem_check.py`. The student feedback was tested against 30 simulated mistakes.
+- **Encoding.** `tools/build_notebooks.py` encodes the key in the students' folder (`python pchem_check.py encode KEY.json`
+  does the same by hand; `decode` prints it) and leaves the instructor's copy plain. This stops casual peeking (opening
+  the file, grep), but it is not secure: the checks run in the student's own kernel, so a determined student can decode
+  the key, just as with gofer's test files. Treat the checks as feedback; for grading, re-run submitted notebooks.
+- **Submission.** `lab.submit(...)` calls `submit_lab` from `shared-public/lab_submit.py` with the score and, through
+  `open_answers=lab.open_answers`, the saved text of the abstract, conclusions, discussions and reflection (read when the
+  button is clicked). Records go to `shared-public/submissions.json` (or `~/submissions_local.json`). The `open_answers`
+  argument is new in `lab_submit.py`; with an older copy on the hub, the button still records the score but no answers.
+
 The order builds from systems with exact answers to one without:
 
-- **H atom** (first calculation is a fully worked cell). Errors above −0.5 Eh: STO-3G 909 meV, 6-31G 48, cc-pVDZ 20,
-  cc-pVTZ 5.2, cc-pVQZ 1.5 meV. One electron, so HF is exact; the only error is the basis (variational principle).
+- **H atom, exact.** Radial functions R_nl and radial distribution functions for n = 1–3 (Atkins Table 8A.1); students
+  code R_1s, P(r) and find r_mp = 1 bohr.
+- **Gaussians.** Students code a normalized Gaussian and a contracted sum; STO-nG fits (ζ = 1; Hehre–Stewart–Pople 1969,
+  Stewart 1970) give R(0) = 0.95, 1.38, 1.61, 1.88 for n = 1, 2, 3, 6 against the exact 2: the missing cusp.
+- **Variational principle** (boxed statement, proof sketch, Hylleraas history box). One Gaussian: α = 8/9π = 0.283,
+  E = −4/3π = −0.42441 Eh (STO-1G, a shape fit, is slightly higher at −0.42422: a good discussion point). Helium with
+  e^{−ζ(r1+r2)}: ζ = 27/16, E = −2.84766 Eh (exact −2.903724; HF limit −2.861680). STO-nG energies with PySCF custom
+  basis: −0.42422, −0.48116, −0.49491, −0.49983 Eh.
+- **Library basis sets.** Errors above −0.5 Eh: STO-3G 909 meV, 6-31G 48, cc-pVDZ 20, cc-pVTZ 5.2, cc-pVQZ 1.5 meV. PySCF's
+  STO-3G hydrogen uses ζ = 1.24 (molecular), so it is worse for the free atom than the ζ = 1 STO-3G (139 meV).
+- **H₂⁺ LCAO.** Students code S(R) (S(2) = 0.5865) and ψ± along the axis. The plot compares LCAO with the exact-in-basis
+  cc-pVTZ orbitals (diagonalizing the one-electron Hamiltonian) at R = 2 and 5 bohr: σg −0.6022 vs LCAO −0.5538 Eh,
+  σu* −0.1671 vs −0.1609 at 2 bohr; −0.5221/−0.5192 and −0.4770/−0.4766 at 5 bohr. Minimal LCAO curve: R_e = 1.32 Å,
+  D_e = 1.76 eV. Optimizing ζ in the LCAO at R = 2 bohr gives ζ ≈ 1.24 and D_e = 2.35 eV.
 - **H₂⁺** (one electron, exact solution known): cc-pVTZ gives R_e = 1.0572 Å (exact 1.057), E = −0.602245 Eh
   (exact −0.602634), D_e = 2.787 eV (exact 2.793). The density plot shows charge built up between the nuclei; the
   energy-component plot shows the bond length as a balance between electronic attraction and 1/R.

@@ -201,7 +201,7 @@ def _append_to_sheet(record, sheet_id, creds_path):
 
 # ── public API ────────────────────────────────────────────────────────────────
 
-def submit_lab(name, user, correct, questions, lab_id):
+def submit_lab(name, user, correct, questions, lab_id, open_answers=None):
     """
     Display a score summary and a Submit button.
     Call this as the last cell in any lab notebook:
@@ -211,6 +211,12 @@ def submit_lab(name, user, correct, questions, lab_id):
 
     lab_id is required (e.g. "Lab00", "Lab01", "Lab05") since this file is
     shared across every lab in the course.
+
+    open_answers (optional): a dict {question_id: answer_text}, or a function
+    returning one, called when the button is clicked (after the notebook is
+    saved). Labs that use pchem_check.Checker pass lab.open_answers so that the
+    abstract, conclusions and discussion answers are recorded. When omitted,
+    answers are found from the gofer check('tests/qXX_open_ended.py') cells.
     """
     perc_correct = correct / len(questions) * 100
     msg = "nice work!" if perc_correct >= 80 else "look over your work again, seek help, some errors!!!"
@@ -246,7 +252,10 @@ def submit_lab(name, user, correct, questions, lab_id):
                 nb_path   = _find_notebook()
                 localtime = time.asctime(time.localtime(time.time()))
 
-                if nb_path:
+                if open_answers is not None:
+                    answers = open_answers() if callable(open_answers) else dict(open_answers)
+                    debug = []
+                elif nb_path:
                     answers, debug = _extract_open_ended(nb_path)
                 else:
                     answers, debug = {}, ["No .ipynb found in current directory"]

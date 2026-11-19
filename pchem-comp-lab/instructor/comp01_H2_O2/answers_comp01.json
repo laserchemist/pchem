@@ -1,0 +1,890 @@
+{
+ "lab": "comp01",
+ "about": "Answer key for Computational Lab 1 (pchem_check.py). Reference values: PySCF 2.x, instructor run. Edit this plain copy in src/; the build tool encodes the students' copy.",
+ "common_mistakes": [
+  {
+   "factor": 27.211386,
+   "feedback": "Off by a factor of 27.2: a hartree ↔ eV conversion is missing, or used twice. Use <code>hartree_to_eV(...)</code> once."
+  },
+  {
+   "factor": 0.529177,
+   "feedback": "Off by a factor of 0.529: a bohr ↔ Å conversion is missing, or used twice."
+  },
+  {
+   "factor": 1000,
+   "feedback": "Off by a factor of 1000: check the unit prefix (eV or meV, J or kJ)."
+  },
+  {
+   "factor": 6.283185307,
+   "feedback": "Off by a factor of 2π: angular frequency ω = 2πν. Check where 2π belongs."
+  }
+ ],
+ "questions": {
+  "abstract": {
+   "title": "Abstract",
+   "open": "Your abstract goes in the cell below",
+   "min_chars": 400
+  },
+  "1.1": {
+   "title": "Unit conversions",
+   "needs": [
+    "hartree_to_eV",
+    "bohr_to_angstrom"
+   ],
+   "tests": [
+    {
+     "value": "hartree_to_eV(1.0)",
+     "answer": 27.211386,
+     "tol": 0.001,
+     "hint": "<code>hartree_to_eV(1)</code> should be 27.211 eV. Multiply the energy by <code>HARTREE_TO_EV</code>.",
+     "wrong": [
+      {
+       "answer": 0.0367493,
+       "feedback": "You divided by <code>HARTREE_TO_EV</code>. Every hartree is 27.2 eV, so <b>multiply</b>: <code>return E_h * HARTREE_TO_EV</code>."
+      },
+      {
+       "answer": 1.0,
+       "tol": 1e-09,
+       "feedback": "<code>hartree_to_eV</code> hands back its input unchanged. Multiply by <code>HARTREE_TO_EV</code>."
+      }
+     ]
+    },
+    {
+     "value": "hartree_to_eV(-0.5)",
+     "answer": -13.6057,
+     "tol": 0.001,
+     "hint": "<code>hartree_to_eV(-0.5)</code> should be −13.606 eV. Multiply, and keep the sign."
+    },
+    {
+     "value": "bohr_to_angstrom(2.0)",
+     "answer": 1.058354,
+     "tol": 0.0001,
+     "hint": "<code>bohr_to_angstrom(2)</code> should be 1.0584 Å. One bohr is 0.529177 Å: multiply by <code>BOHR_TO_ANG</code>.",
+     "wrong": [
+      {
+       "answer": 3.779452,
+       "feedback": "You divided by <code>BOHR_TO_ANG</code>. A bohr is shorter than an ångström (0.529 Å), so the number in Å is <b>smaller</b>: multiply."
+      },
+      {
+       "answer": 2.0,
+       "tol": 1e-09,
+       "feedback": "<code>bohr_to_angstrom</code> hands back its input unchanged. Multiply by <code>BOHR_TO_ANG</code>."
+      }
+     ]
+    }
+   ],
+   "ok": "The H atom's −0.5 hartree is −13.606 eV: exactly the ionization energy of hydrogen."
+  },
+  "2.1": {
+   "title": "Hydrogen 1s radial function",
+   "needs": [
+    "R_1s",
+    "P_1s",
+    "r_mp",
+    "r"
+   ],
+   "tests": [
+    {
+     "value": "R_1s(0.0)",
+     "answer": 2.0,
+     "tol": 1e-06,
+     "hint": "<code>R_1s(0)</code> should be 2. The 1s radial function is <code>2 * np.exp(-r)</code>.",
+     "wrong": [
+      {
+       "answer": 1.0,
+       "tol": 1e-06,
+       "feedback": "<code>R_1s(0)</code> is 1: the factor 2 in front of <code>np.exp(-r)</code> is missing. It normalizes the radial function."
+      },
+      {
+       "answer": 0.5641896,
+       "rtol": 0.0001,
+       "feedback": "That is the whole 1s orbital, ψ = e<sup>−r</sup>/√π. The <i>radial</i> function on its own is <code>2 * np.exp(-r)</code>."
+      }
+     ]
+    },
+    {
+     "value": "R_1s(1.0)",
+     "answer": 0.7357589,
+     "tol": 1e-06,
+     "hint": "<code>R_1s(1)</code> should be 2e<sup>−1</sup> = 0.7358.",
+     "wrong": [
+      {
+       "answer": 5.436564,
+       "rtol": 0.0001,
+       "feedback": "Your function <b>grows</b> with r. The exponent needs a minus sign: <code>np.exp(-r)</code>."
+      }
+     ]
+    },
+    {
+     "assert": "np.allclose(P_1s, r**2 * 4 * np.exp(-2 * r))",
+     "hint": "<code>P_1s</code> should be r² R(r)²: <code>r**2 * R_1s(r)**2</code>.",
+     "wrong": [
+      {
+       "when": "np.allclose(P_1s, r * 4 * np.exp(-2 * r))",
+       "feedback": "You multiplied by r, not r². The area of the shell is 4πr²: <code>r**2 * R_1s(r)**2</code>."
+      },
+      {
+       "when": "np.allclose(P_1s, r**2 * 2 * np.exp(-r))",
+       "feedback": "R(r) needs to be <b>squared</b> (a probability is |ψ|²): <code>R_1s(r)**2</code>."
+      },
+      {
+       "when": "np.allclose(P_1s, 4 * np.exp(-2 * r))",
+       "feedback": "That is R² alone. The radial distribution function also has the factor r² for the area of the shell."
+      },
+      {
+       "when": "np.allclose(P_1s, 16 * np.pi * r**2 * np.exp(-2 * r))",
+       "feedback": "The extra 4π is already included in R(r)'s normalization: <code>r**2 * R_1s(r)**2</code>."
+      }
+     ]
+    },
+    {
+     "value": "r_mp",
+     "answer": 1.0,
+     "tol": 0.011,
+     "hint": "The most probable radius should be 1 bohr. Use <code>r[np.argmax(P_1s)]</code>: the <i>r</i> value where P is largest.",
+     "wrong": [
+      {
+       "when": "isinstance(r_mp, (int, np.integer))",
+       "feedback": "<code>r_mp</code> is a whole number: an <b>index</b> (a position in the array), not a value. Use it to pick from the grid: <code>r[np.argmax(P_1s)]</code>."
+      },
+      {
+       "answer": 0.0,
+       "tol": 1e-09,
+       "feedback": "r = 0 is where R(r) (and ψ) is largest, but P(r) is zero there. Find the maximum of <code>P_1s</code>: <code>r[np.argmax(P_1s)]</code>."
+      },
+      {
+       "answer": 0.5413,
+       "tol": 0.002,
+       "feedback": "That is the <i>height</i> of the peak (the largest value of P). You want its <i>position</i>: <code>r[np.argmax(P_1s)]</code>."
+      },
+      {
+       "answer": 2.0,
+       "tol": 0.011,
+       "feedback": "A peak at 2 bohr means P(r) used R instead of R²: square the radial function."
+      }
+     ]
+    }
+   ],
+   "ok": "Most probable radius = 1 bohr = 0.529 Å: Bohr's radius, now as the peak of a probability distribution."
+  },
+  "2.2": {
+   "title": "Gaussians and contracted Gaussians",
+   "needs": [
+    "gaussian_R",
+    "sto_ng_R",
+    "STO"
+   ],
+   "tests": [
+    {
+     "value": "gaussian_R(0.0, 1.0)",
+     "answer": 2.526475,
+     "tol": 1e-05,
+     "hint": "<code>gaussian_R(0, 1)</code> should be 2.5265. Return <code>N * np.exp(-alpha * r**2)</code>.",
+     "wrong": [
+      {
+       "answer": 1.0,
+       "tol": 1e-06,
+       "feedback": "Without the normalization constant: multiply the exponential by <code>N</code>."
+      }
+     ]
+    },
+    {
+     "value": "gaussian_R(2.0, 0.5)",
+     "answer": 0.2033076,
+     "tol": 1e-06,
+     "hint": "<code>gaussian_R(2, 0.5)</code> should be 0.2033. Check the exponent: −α r².",
+     "wrong": [
+      {
+       "answer": 0.5526473,
+       "feedback": "Your exponent is −α r. A Gaussian has r <b>squared</b>: <code>np.exp(-alpha * r**2)</code>. (That is what makes it flat at the nucleus.)"
+      },
+      {
+       "answer": 11.1003,
+       "rtol": 0.01,
+       "feedback": "The exponent is missing its minus sign: <code>np.exp(-alpha * r**2)</code>."
+      }
+     ]
+    },
+    {
+     "value": "sto_ng_R(0.0, [1.0], [1.0])",
+     "answer": 2.526475,
+     "tol": 1e-05,
+     "hint": "With one Gaussian and coefficient 1, <code>sto_ng_R</code> should equal <code>gaussian_R</code>. Inside the loop: <code>total = total + d * gaussian_R(r, a)</code>."
+    },
+    {
+     "value": "sto_ng_R(0.0, *STO[3])",
+     "answer": 1.612883,
+     "tol": 0.0001,
+     "hint": "<code>sto_ng_R(0, *STO[3])</code> should be 1.613: add <b>every</b> Gaussian, each times its coefficient.",
+     "wrong": [
+      {
+       "answer": 0.2143008,
+       "feedback": "That is only the <b>last</b> Gaussian: each pass of the loop replaced <code>total</code> instead of adding to it. Use <code>total = total + d * gaussian_R(r, a)</code>."
+      },
+      {
+       "answer": 6.37327,
+       "feedback": "The Gaussians were added without their coefficients. Multiply each by <code>d</code>."
+      }
+     ]
+    }
+   ],
+   "ok": "STO-3G reaches only 1.61 of the exact 2.00 at the nucleus: Gaussians can't make the cusp."
+  },
+  "3.1": {
+   "title": "Variational energy of one Gaussian",
+   "needs": [
+    "E_gauss",
+    "alpha_best",
+    "E_gauss_best"
+   ],
+   "tests": [
+    {
+     "value": "E_gauss(1.0)",
+     "answer": -0.09576912,
+     "tol": 1e-06,
+     "hint": "<code>E_gauss(1)</code> should be −0.0958 hartree: kinetic <code>1.5 * alpha</code> plus potential <code>-2 * np.sqrt(2 * alpha / np.pi)</code>.",
+     "wrong": [
+      {
+       "answer": 0.2267605,
+       "feedback": "The square root is missing from the potential energy: <code>-2 * np.sqrt(2 * alpha / np.pi)</code>."
+      },
+      {
+       "answer": 1.5,
+       "tol": 1e-06,
+       "feedback": "That is the kinetic energy alone. Add the potential energy, <code>-2 * np.sqrt(2 * alpha / np.pi)</code>."
+      },
+      {
+       "answer": -1.595769,
+       "feedback": "That is the potential energy alone. Add the kinetic energy, <code>1.5 * alpha</code>."
+      }
+     ]
+    },
+    {
+     "value": "alpha_best",
+     "answer": 0.2829421,
+     "tol": 0.003,
+     "hint": "<code>alpha_best</code> should be about 0.283 bohr⁻². Use <code>alphas[np.argmin(E_alpha)]</code>.",
+     "wrong": [
+      {
+       "when": "isinstance(alpha_best, (int, np.integer))",
+       "feedback": "<code>alpha_best</code> is a whole number: an <b>index</b> (a position in the array), not a value. Use it to pick from the grid: <code>alphas[np.argmin(E_alpha)]</code>."
+      },
+      {
+       "answer": 1.5,
+       "tol": 1e-06,
+       "feedback": "That is the end of the grid, where the energy is <b>highest</b>: you used <code>np.argmax</code>. The variational principle wants the minimum: <code>np.argmin</code>."
+      },
+      {
+       "answer": -0.4244132,
+       "tol": 0.001,
+       "feedback": "That is the lowest <i>energy</i>, not the α where it happens: <code>alphas[np.argmin(E_alpha)]</code>."
+      }
+     ]
+    },
+    {
+     "value": "E_gauss_best",
+     "answer": -0.4244132,
+     "tol": 1e-05,
+     "hint": "<code>E_gauss_best</code> should be −0.4244 hartree: <code>E_gauss(alpha_best)</code>.",
+     "wrong": [
+      {
+       "answer": 0.2829421,
+       "tol": 0.003,
+       "feedback": "That is α, not the energy. Evaluate the energy there: <code>E_gauss(alpha_best)</code>."
+      }
+     ]
+    }
+   ],
+   "ok": "The best single Gaussian gives −0.4244 hartree, 2.06 eV above the exact energy, never below it."
+  },
+  "3.2": {
+   "title": "Helium: Hylleraas's problem",
+   "needs": [
+    "E_He",
+    "zeta_best",
+    "E_He_best"
+   ],
+   "tests": [
+    {
+     "value": "E_He(2.0)",
+     "answer": -2.75,
+     "tol": 1e-06,
+     "hint": "<code>E_He(2)</code> should be −2.75 hartree: <code>zeta**2 - 27 / 8 * zeta</code>.",
+     "wrong": [
+      {
+       "answer": -4.0,
+       "tol": 1e-06,
+       "feedback": "That is ζ² − 4ζ: the electron–electron repulsion, +⅝ζ, is missing. Together: ζ² − 4ζ + ⅝ζ = ζ² − 27ζ/8."
+      },
+      {
+       "answer": 10.75,
+       "tol": 1e-06,
+       "feedback": "Sign: the attraction to the nucleus lowers the energy, so it is ζ² <b>−</b> 27ζ/8."
+      }
+     ]
+    },
+    {
+     "value": "zeta_best",
+     "answer": 1.6875,
+     "tol": 0.002,
+     "hint": "<code>zeta_best</code> should be 27/16 = 1.6875. Use <code>zetas_He[np.argmin(E_He(zetas_He))]</code>.",
+     "wrong": [
+      {
+       "when": "isinstance(zeta_best, (int, np.integer))",
+       "feedback": "<code>zeta_best</code> is a whole number: an <b>index</b> (a position in the array), not a value. Use it to pick from the grid: <code>zetas_He[np.argmin(E_He(zetas_He))]</code>."
+      },
+      {
+       "answer": 2.5,
+       "tol": 1e-06,
+       "feedback": "That is the end of the grid, where the energy is highest: use <code>np.argmin</code>, not <code>np.argmax</code>."
+      },
+      {
+       "answer": -2.84765625,
+       "tol": 0.001,
+       "feedback": "That is the lowest energy, not the ζ where it happens."
+      }
+     ]
+    },
+    {
+     "value": "E_He_best",
+     "answer": -2.84765625,
+     "tol": 1e-05,
+     "hint": "<code>E_He_best</code> should be −2.8477 hartree: <code>E_He(zeta_best)</code>.",
+     "wrong": [
+      {
+       "answer": 1.6875,
+       "tol": 0.002,
+       "feedback": "That is ζ, not the energy: <code>E_He(zeta_best)</code>."
+      }
+     ]
+    }
+   ],
+   "ok": "ζ = 1.69: each electron screens the other from the nucleus. The energy is 1.5 eV above exact, still variational."
+  },
+  "3.3": {
+   "title": "H atom in several basis sets",
+   "needs": [
+    "h_atom_energy",
+    "E_H"
+   ],
+   "tests": [
+    {
+     "value": "h_atom_energy('sto-3g')",
+     "answer": -0.466582,
+     "tol": 1e-05,
+     "hint": "<code>h_atom_energy('sto-3g')</code> should be −0.466582 hartree, as in the worked example. Use <code>scf.UHF(mol)</code> and return <code>mf.kernel()</code>."
+    },
+    {
+     "assert": "all(b in E_H for b in ['sto-3g', '6-31g', 'cc-pvdz', 'cc-pvtz', 'cc-pvqz'])",
+     "hint": "The dictionary <code>E_H</code> is missing some basis sets. Run the whole cell, including the loop."
+    },
+    {
+     "value": "E_H['cc-pvqz']",
+     "answer": -0.499946,
+     "tol": 1e-05,
+     "hint": "<code>E_H['cc-pvqz']</code> should be −0.499946 hartree. Rerun the cell after fixing the function."
+    }
+   ],
+   "ok": "Every energy is above −0.5 hartree and falls as the basis grows: the variational principle at work."
+  },
+  "3.4d": {
+   "title": "Discussion: the variational principle",
+   "open": "Question 3.4 Discussion",
+   "min_chars": 60
+  },
+  "4.1": {
+   "title": "H₂⁺ LCAO orbitals",
+   "needs": [
+    "overlap_S",
+    "psi_lcao"
+   ],
+   "tests": [
+    {
+     "value": "overlap_S(0.0)",
+     "answer": 1.0,
+     "tol": 1e-09,
+     "hint": "<code>overlap_S(0)</code> should be 1: an orbital overlaps perfectly with itself. Use <code>np.exp(-R) * (1 + R + R**2 / 3)</code>."
+    },
+    {
+     "value": "overlap_S(2.0)",
+     "answer": 0.5864529,
+     "tol": 1e-05,
+     "hint": "<code>overlap_S(2)</code> should be 0.5865.",
+     "wrong": [
+      {
+       "answer": 0.4060058,
+       "feedback": "The <code>R**2 / 3</code> term is missing: <code>np.exp(-R) * (1 + R + R**2 / 3)</code>."
+      },
+      {
+       "answer": 0.947347,
+       "feedback": "R² should be divided by 3: <code>R**2 / 3</code>."
+      },
+      {
+       "answer": 4.333333,
+       "feedback": "The factor <code>np.exp(-R)</code> is missing: without it the overlap would grow as the atoms separate."
+      }
+     ]
+    },
+    {
+     "value": "psi_lcao(1.0, 2.0, -1)",
+     "answer": 0.0,
+     "tol": 1e-09,
+     "hint": "σu* should be exactly zero at the midpoint. Use <code>phi_A + sign * phi_B</code>.",
+     "wrong": [
+      {
+       "answer": 0.2330408,
+       "feedback": "σu* came out the same as σg: the <code>sign</code> is not used. Write <code>phi_A + sign * phi_B</code> and <code>1 + sign * overlap_S(R)</code>."
+      }
+     ]
+    },
+    {
+     "value": "psi_lcao(1.0, 2.0, +1)",
+     "answer": 0.2330408,
+     "tol": 1e-05,
+     "hint": "σg at the midpoint should be 0.2330. Divide by <code>np.sqrt(2 * (1 + sign * overlap_S(R)))</code>.",
+     "wrong": [
+      {
+       "answer": 0.2935253,
+       "feedback": "You divided by √2 only. The overlap matters: the normalization is √(2(1 ± S))."
+      },
+      {
+       "answer": 0.4151075,
+       "feedback": "The orbital isn't normalized: divide by <code>np.sqrt(2 * (1 + sign * overlap_S(R)))</code>."
+      },
+      {
+       "answer": 0.1308288,
+       "feedback": "You divided by 2(1 ± S): take the square root, <code>np.sqrt(2 * (1 + sign * overlap_S(R)))</code>."
+      }
+     ]
+    },
+    {
+     "value": "psi_lcao(0.0, 2.0, -1)",
+     "answer": 0.5364081,
+     "tol": 1e-05,
+     "hint": "σu* is not normalized correctly.",
+     "wrong": [
+      {
+       "answer": 0.2738698,
+       "feedback": "For σu* the normalization uses 1 − S. Write <code>1 + sign * overlap_S(R)</code>, so the sign flips it."
+      }
+     ]
+    }
+   ],
+   "ok": "S = 0.59 at the equilibrium bond length: the two 1s orbitals share a lot of space, and σu* has a node at the midpoint."
+  },
+  "4.2": {
+   "title": "H₂⁺ energy function",
+   "needs": [
+    "h2plus_energy"
+   ],
+   "tests": [
+    {
+     "value": "h2plus_energy(1.057)",
+     "answer": -0.602244,
+     "tol": 2e-05,
+     "hint": "<code>h2plus_energy(1.057)</code> should be −0.602244 hartree with cc-pVTZ. H₂⁺ has two protons and one electron: <code>charge = 1</code>, <code>spin = 1</code>.",
+     "wrong": [
+      {
+       "when": "value < -0.7",
+       "feedback": "The energy is far too low for one electron. H₂⁺ has <b>one</b> electron: <code>charge = 1</code>."
+      },
+      {
+       "when": "value > -0.55",
+       "feedback": "The energy is too high for H₂⁺. Check <code>charge = 1</code> and <code>spin = 1</code> (one electron, so one unpaired electron)."
+      },
+      {
+       "when": "abs(value + 0.6022) < 0.002",
+       "feedback": "Close, but not the cc-pVTZ value. Did you change the default basis set?"
+      }
+     ]
+    }
+   ],
+   "ok": "One electron, two protons, and a real bond: within 0.0004 hartree (11 meV) of the exact answer."
+  },
+  "4.3": {
+   "title": "H₂⁺ potential energy curve",
+   "needs": [
+    "E_h2p",
+    "R_grid"
+   ],
+   "tests": [
+    {
+     "assert": "len(E_h2p) == len(R_grid)",
+     "hint": "<code>E_h2p</code> needs one energy for every R in <code>R_grid</code>. Use <code>[h2plus_energy(R) for R in R_grid]</code> inside <code>np.array(...)</code>.",
+     "wrong": [
+      {
+       "when": "np.ndim(E_h2p) == 0",
+       "feedback": "<code>E_h2p</code> is a single number. Make one energy per bond length with a list comprehension: <code>np.array([h2plus_energy(R) for R in R_grid])</code>."
+      }
+     ]
+    },
+    {
+     "value": "R_grid[np.argmin(E_h2p)]",
+     "answer": 1.06,
+     "tol": 0.1,
+     "hint": "The lowest energy should be near R = 1.06 Å.",
+     "wrong": [
+      {
+       "when": "np.ptp(E_h2p) < 1e-9",
+       "feedback": "Every energy is the same: call <code>h2plus_energy(R)</code> with <code>R</code> from the loop, not a fixed number."
+      }
+     ]
+    }
+   ],
+   "ok": "A bound molecule: the curve dips below H + H⁺ (−0.5 hartree) by 2.8 eV."
+  },
+  "4.4": {
+   "title": "H₂⁺ bond energy",
+   "needs": [
+    "De_h2p"
+   ],
+   "tests": [
+    {
+     "value": "De_h2p",
+     "answer": 2.787,
+     "tol": 0.05,
+     "hint": "<code>De_h2p</code> should be about 2.79 eV: <code>hartree_to_eV(E_H['cc-pvtz'] - E_min_h2p)</code>.",
+     "wrong": [
+      {
+       "answer": 16.388,
+       "tol": 0.05,
+       "feedback": "About 16 eV: E(H) is missing. D<sub>e</sub> = E(H) + E(H⁺) − E<sub>min</sub>, with E(H⁺) = 0."
+      },
+      {
+       "answer": -13.6005,
+       "tol": 0.05,
+       "feedback": "That is E(H) on its own, in eV. Subtract the molecule: <code>E_H['cc-pvtz'] - E_min_h2p</code>."
+      }
+     ]
+    }
+   ],
+   "ok": "2.79 eV against the exact 2.793 eV: the only approximation left is the basis set."
+  },
+  "4.5d": {
+   "title": "Discussion: where the bond comes from",
+   "open": "Question 4.5 Discussion",
+   "min_chars": 60
+  },
+  "5.1": {
+   "title": "H₂ energy: Hartree–Fock and full CI",
+   "needs": [
+    "h2_energy"
+   ],
+   "tests": [
+    {
+     "value": "h2_energy(0.7414, 'hf')",
+     "answer": -1.132955,
+     "tol": 2e-05,
+     "hint": "<code>h2_energy(0.7414, 'hf')</code> should be −1.132955 hartree. The Hartree–Fock part was given: make sure it is unchanged."
+    },
+    {
+     "assert": "np.ndim(h2_energy(0.7414, 'fci')) == 0",
+     "hint": "The FCI energy should be a single number. <code>fci.FCI(mf).kernel()</code> returns (energy, wavefunction): add <code>[0]</code> to keep only the energy."
+    },
+    {
+     "value": "h2_energy(0.7414, 'fci')",
+     "answer": -1.172336,
+     "tol": 2e-05,
+     "hint": "<code>h2_energy(0.7414, 'fci')</code> should be −1.172336 hartree: <code>E_fci = fci.FCI(mf).kernel()[0]</code>.",
+     "wrong": [
+      {
+       "answer": -1.132955,
+       "tol": 2e-05,
+       "feedback": "That is the Hartree–Fock energy. Run full CI on top of it: <code>fci.FCI(mf).kernel()[0]</code>."
+      }
+     ]
+    }
+   ],
+   "ok": "Full CI lies 1.07 eV below Hartree–Fock: that is the correlation energy of H₂."
+  },
+  "5.2": {
+   "title": "H₂ curves and correlation energy",
+   "needs": [
+    "E_hf_curve",
+    "E_fci_curve",
+    "E_corr",
+    "R_grid2"
+   ],
+   "tests": [
+    {
+     "assert": "len(E_hf_curve) == len(R_grid2) and len(E_fci_curve) == len(R_grid2)",
+     "hint": "Both curves need one energy per R in <code>R_grid2</code> (not <code>R_grid</code>)."
+    },
+    {
+     "assert": "np.all(np.asarray(E_fci_curve) <= np.asarray(E_hf_curve) + 1e-8)",
+     "hint": "The full CI energy should never be above Hartree–Fock. Did you swap <code>'hf'</code> and <code>'fci'</code>?"
+    },
+    {
+     "assert": "np.allclose(E_corr, np.asarray(E_fci_curve) - np.asarray(E_hf_curve))",
+     "hint": "<code>E_corr</code> should be <code>E_fci_curve - E_hf_curve</code>, point by point.",
+     "wrong": [
+      {
+       "when": "np.allclose(E_corr, np.asarray(E_hf_curve) - np.asarray(E_fci_curve))",
+       "feedback": "Right size, wrong sign: the correlation energy is E(FCI) − E(HF), which is negative."
+      }
+     ]
+    }
+   ],
+   "ok": "Full CI breaks the bond into two H atoms; Hartree–Fock can't, and its error grows as the bond stretches."
+  },
+  "5.3": {
+   "title": "Harmonic wavenumber",
+   "needs": [
+    "harmonic_wavenumber"
+   ],
+   "tests": [
+    {
+     "value": "harmonic_wavenumber(1.18424, 1.007825, 34.968853)",
+     "answer": 2990.9,
+     "tol": 3,
+     "hint": "The HCl check should give 2991 cm⁻¹. Check the conversions: k × <code>HARTREE_TO_J</code> / 1e-20 for N/m, μ × <code>AMU_TO_KG</code> for kg, and divide ω by 2π<i>c</i> with <i>c</i> in cm/s.",
+     "wrong": [
+      {
+       "answer": 18792.41,
+       "feedback": "Too big by 2π: ν̃ = ω / (2π<i>c</i>). Divide by <code>2 * np.pi * C_CM_PER_S</code>."
+      },
+      {
+       "answer": 2.990904e-07,
+       "feedback": "The force constant is still per Å²: divide by 1e-20 (there are 10⁻²⁰ m² in an Å²) to get N/m."
+      },
+      {
+       "answer": 2.990904e-17,
+       "feedback": "You multiplied by 1e-20. An Å² is a <i>small</i> area, so k per m² is <b>larger</b>: divide by 1e-20."
+      },
+      {
+       "answer": 1.218785e-10,
+       "feedback": "The reduced mass is still in amu: multiply by <code>AMU_TO_KG</code>."
+      },
+      {
+       "answer": 299090.4,
+       "feedback": "Too big by 100: <i>c</i> must be in cm s⁻¹ (<code>C_CM_PER_S</code>) to give cm⁻¹."
+      },
+      {
+       "answer": 493.5313,
+       "feedback": "μ is the <b>reduced</b> mass, m₁m₂/(m₁ + m₂), not m₁ + m₂."
+      },
+      {
+       "answer": 1432425000000.0,
+       "feedback": "k is still in hartree/Å²: multiply by <code>HARTREE_TO_J</code> to get joules."
+      },
+      {
+       "answer": 1.685022e+18,
+       "feedback": "ω is the <b>square root</b> of k/μ: <code>np.sqrt(k_SI / mu)</code>."
+      }
+     ]
+    },
+    {
+     "value": "harmonic_wavenumber(4 * 1.18424, 1.007825, 34.968853) / harmonic_wavenumber(1.18424, 1.007825, 34.968853)",
+     "answer": 2.0,
+     "tol": 0.001,
+     "hint": "A bond 4× stiffer should vibrate 2× faster (ω = √(k/μ)). Make sure you take the square root of k/μ."
+    }
+   ],
+   "ok": "Your function reproduces HCl's 2991 cm⁻¹; you'll reuse it for H₂ and O₂."
+  },
+  "5.4": {
+   "title": "H₂: bond energy and frequency",
+   "needs": [
+    "De_hf",
+    "De_fci",
+    "nu_hf",
+    "nu_fci"
+   ],
+   "tests": [
+    {
+     "value": "De_fci",
+     "answer": 4.7,
+     "tol": 0.1,
+     "hint": "<code>De_fci</code> should be about 4.70 eV: <code>hartree_to_eV(2 * E_H['cc-pvtz'] - E_min_fci)</code>.",
+     "wrong": [
+      {
+       "answer": 18.3,
+       "tol": 0.15,
+       "feedback": "About 18 eV: only <b>one</b> H atom was subtracted. H₂ breaks into two: <code>2 * E_H['cc-pvtz']</code>."
+      }
+     ]
+    },
+    {
+     "value": "De_hf",
+     "answer": 3.629,
+     "tol": 0.1,
+     "hint": "<code>De_hf</code> should be about 3.6 eV: <code>hartree_to_eV(2 * E_H['cc-pvtz'] - E_min_hf)</code>.",
+     "wrong": [
+      {
+       "when": "abs(value - De_fci) < 1e-9",
+       "feedback": "<code>De_hf</code> equals <code>De_fci</code>: use <code>E_min_hf</code> for Hartree–Fock."
+      },
+      {
+       "answer": 17.23,
+       "tol": 0.15,
+       "feedback": "About 17 eV: only <b>one</b> H atom was subtracted: <code>2 * E_H['cc-pvtz']</code>."
+      }
+     ]
+    },
+    {
+     "value": "nu_fci",
+     "answer": 4409,
+     "tol": 15,
+     "hint": "<code>nu_fci</code> should be about 4410 cm⁻¹: <code>harmonic_wavenumber(k_fci, M_H, M_H)</code>.",
+     "wrong": [
+      {
+       "when": "abs(value - nu_hf) < 1e-9",
+       "feedback": "<code>nu_fci</code> equals <code>nu_hf</code>: use <code>k_fci</code> for full CI and <code>k_hf</code> for Hartree–Fock."
+      }
+     ]
+    },
+    {
+     "value": "nu_hf",
+     "answer": 4587,
+     "tol": 20,
+     "hint": "<code>nu_hf</code> should be about 4590 cm⁻¹: <code>harmonic_wavenumber(k_hf, M_H, M_H)</code>."
+    }
+   ],
+   "ok": "Full CI: 4.70 eV and 4409 cm⁻¹, against the exact 4.75 eV and 4401 cm⁻¹. Correlation matters most for D_e."
+  },
+  "5.5d": {
+   "title": "Discussion: why Hartree–Fock fails",
+   "open": "Question 5.5 Discussion",
+   "min_chars": 60
+  },
+  "6.1": {
+   "title": "Counting determinants",
+   "needs": [
+    "n_det_H2",
+    "n_det_O2"
+   ],
+   "tests": [
+    {
+     "value": "n_det_H2",
+     "answer": 784,
+     "tol": 0,
+     "hint": "H₂ has one α and one β electron in 28 orbitals: <code>math.comb(28, 1) * math.comb(28, 1)</code>.",
+     "wrong": [
+      {
+       "answer": 56,
+       "tol": 0,
+       "feedback": "You <b>added</b> the α and β counts. Every α arrangement can go with every β arrangement, so <b>multiply</b>."
+      },
+      {
+       "answer": 378,
+       "tol": 0,
+       "feedback": "<code>math.comb(28, 2)</code> treats the two electrons as the same kind. Place the α and β electrons separately and multiply."
+      }
+     ]
+    },
+    {
+     "value": "n_det_O2",
+     "answer": 8178045876000,
+     "tol": 0,
+     "hint": "O₂ (triplet) has 9 α and 7 β electrons in 28 orbitals: <code>math.comb(28, 9) * math.comb(28, 7)</code>.",
+     "wrong": [
+      {
+       "answer": 8090940,
+       "tol": 0,
+       "feedback": "You <b>added</b> the α and β counts: multiply them."
+      },
+      {
+       "answer": 30421755,
+       "tol": 0,
+       "feedback": "<code>math.comb(28, 16)</code> puts all 16 electrons in together. Place the 9 α and 7 β electrons separately and multiply."
+      }
+     ]
+    }
+   ],
+   "ok": "8 trillion determinants for O₂ against 784 for H₂, with the same 28 orbitals: that's why we need DFT."
+  },
+  "6.2": {
+   "title": "O₂ energy with DFT",
+   "needs": [
+    "o2_energy"
+   ],
+   "tests": [
+    {
+     "value": "o2_energy(1.21, spin=2)",
+     "answer": -150.204643,
+     "tol": 0.0001,
+     "hint": "<code>o2_energy(1.21, spin=2)</code> should be −150.204643 hartree. Use <code>dft.UKS(mol)</code> when <code>spin > 0</code> and return <code>mf.kernel()</code>."
+    },
+    {
+     "assert": "o2_energy(1.21, spin=0) > o2_energy(1.21, spin=2)",
+     "hint": "For <code>spin=0</code> use <code>dft.RKS(mol)</code>: <code>dft.UKS(mol) if spin > 0 else dft.RKS(mol)</code>."
+    }
+   ],
+   "ok": "The triplet is lower: O₂'s ground state has two unpaired electrons."
+  },
+  "6.3": {
+   "title": "O₂ triplet and singlet curves",
+   "needs": [
+    "E_trip",
+    "E_sing",
+    "R_grid3"
+   ],
+   "tests": [
+    {
+     "assert": "len(E_trip) == len(R_grid3) and len(E_sing) == len(R_grid3)",
+     "hint": "Both curves need one energy per R in <code>R_grid3</code>."
+    },
+    {
+     "assert": "np.all(np.asarray(E_sing) > np.asarray(E_trip))",
+     "hint": "The singlet should be above the triplet everywhere. Did you swap <code>spin=0</code> and <code>spin=2</code>?"
+    },
+    {
+     "value": "(E_sing[np.argmin(E_trip)] - np.min(E_trip)) * 27.2114",
+     "answer": 1.71,
+     "tol": 0.2,
+     "hint": "The singlet–triplet gap at the minimum should be about 1.7 eV. Check both curves used the default B3LYP/def2-SVP."
+    }
+   ],
+   "ok": "A triplet ground state 1.7 eV below the closed-shell singlet: two unpaired electrons make O₂ paramagnetic."
+  },
+  "6.4": {
+   "title": "O₂ frequency and bond energy",
+   "needs": [
+    "nu_O2",
+    "De_O2"
+   ],
+   "tests": [
+    {
+     "value": "nu_O2",
+     "answer": 1697,
+     "tol": 30,
+     "hint": "<code>nu_O2</code> should be about 1700 cm⁻¹: <code>harmonic_wavenumber(k_O2, M_O, M_O)</code>.",
+     "wrong": [
+      {
+       "when": "value > 5000",
+       "feedback": "Far too high: those are hydrogen masses. Use oxygen: <code>harmonic_wavenumber(k_O2, M_O, M_O)</code>."
+      }
+     ]
+    },
+    {
+     "value": "De_O2",
+     "answer": 5.53,
+     "tol": 0.15,
+     "hint": "<code>De_O2</code> should be about 5.5 eV: <code>hartree_to_eV(2 * E_O - E_min_O2)</code>.",
+     "wrong": [
+      {
+       "when": "value > 100",
+       "feedback": "Far too large: only <b>one</b> O atom was subtracted. O₂ breaks into two: <code>2 * E_O</code>."
+      }
+     ]
+    }
+   ],
+   "ok": "B3LYP: 1697 cm⁻¹ and 5.5 eV, against 1580 cm⁻¹ and 5.21 eV measured. Good, but with no exact answer to check against."
+  },
+  "6.5d": {
+   "title": "Discussion: O₂ magnetism and IR",
+   "open": "Question 6.5 Discussion",
+   "min_chars": 60
+  },
+  "7c": {
+   "title": "Conclusions",
+   "open": "Question 7. Conclusions",
+   "min_chars": 300
+  },
+  "8d": {
+   "title": "Reflection",
+   "open": "**Question 8.**",
+   "min_chars": 60
+  }
+ }
+}

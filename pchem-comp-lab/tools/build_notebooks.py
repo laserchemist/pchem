@@ -27,7 +27,8 @@ Course-style labs (the CHEM 3376 format, with auto-checks) also use:
 
 A lab named src/comp01_H2_O2.py is written to comp01_H2_O2/comp01_H2_O2.ipynb (students) and
 instructor/comp01_H2_O2/ (solutions), each with a copy of the assets in src/comp01_H2_O2/
-(tests/ for check(), quiz .json files, data). Each lab folder holds exactly one notebook, because
+(the checker pchem_check.py, the answer key answers_<lab>.json, quiz .json files, data). The answer key
+is encoded in the students' folder and left plain in the instructor's. Each lab folder holds exactly one notebook, because
 the course's init.py finds "the" notebook as the newest .ipynb in the folder.
 
     python tools/build_notebooks.py            # build both sets
@@ -152,6 +153,19 @@ def build(src, student):
     return nb
 
 
+def encode_answer_keys(folder):
+    """Encode every answers_*.json in a student lab folder (see pchem_check.py, "About the encoding")."""
+    import importlib.util
+    keys = glob.glob(os.path.join(folder, "answers_*.json"))
+    if not keys:
+        return
+    spec = importlib.util.spec_from_file_location("pchem_check", os.path.join(folder, "pchem_check.py"))
+    pchem_check = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(pchem_check)
+    for key in keys:
+        pchem_check.encode_file(key)
+
+
 def is_lab(src):
     with open(src, encoding="utf-8") as f:
         return f.readline().strip() == "# LAB"
@@ -190,6 +204,8 @@ def main():
                 if os.path.isdir(assets):
                     shutil.copytree(assets, out_dir, dirs_exist_ok=True,
                                     ignore=shutil.ignore_patterns("__pycache__", ".ipynb_checkpoints"))
+                    if student:                       # students get the answer key encoded; instructors keep it plain
+                        encode_answer_keys(out_dir)
                 out = os.path.join(out_dir, name + ".ipynb")
                 nbformat.write(nb, out)
                 if a.execute and not student:

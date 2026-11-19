@@ -9,7 +9,7 @@ to explain why CO₂ absorbs infrared light. Everything runs in Jupyter with pip
 
 | # | notebook | session | what students build | physical idea |
 |---|---|---|---|---|
-| 1 | `comp01_H2_O2` (course format) | 1 | H atom → H₂⁺ → H₂ (exact answers known) → O₂ with DFT; energy functions, curves, force constants | variational principle; the one-electron bond; electron correlation; why FCI is impossible for O₂; triplet O₂; why O₂ is IR-inactive |
+| 1 | `comp01_H2_O2` (course format) | 1 | H radial functions → Gaussian (STO-nG) fits → variational energies (H, He) → H₂⁺ LCAO and accurate orbitals → H₂ → O₂ with DFT; energy functions, curves, force constants; abstract and conclusions | the nuclear cusp and Gaussian basis sets; the variational principle (Hylleraas); the one-electron bond; electron correlation; why FCI is impossible for O₂; triplet O₂; why O₂ is IR-inactive |
 | 2 | `02_ab_initio_CO` | 1 | HF → MP2 → CCSD(T) curves; basis-set convergence; dipole | electron correlation; systematic improvability; dμ/dr |
 | 3 | `03_vibrational_levels` | 1 | finite-difference Schrödinger solver | anharmonicity, zero-point energy, overtones, isotope shifts |
 | 4 | `04_CO2_harmonic_IR` | 2 | mass-weighted Hessian, normal modes, IR intensities | selection rules from symmetry; the greenhouse bend |
@@ -20,7 +20,7 @@ to explain why CO₂ absorbs infrared light. Everything runs in Jupyter with pip
 ## Repository layout
 
 Notebook 1 is in the CHEM 3376 course format, the same as the conductance lab: it lives in its own lab folder
-(`comp01_H2_O2/`, with its answer checker `pchem_check.py` + `checks_comp01.py` and a quiz file) and starts with the course
+(`comp01_H2_O2/`, with its answer checker `pchem_check.py`, the answer key `answers_comp01.json` (encoded in the student folder) and a quiz file) and starts with the course
 initialization cell, which loads `init.py` or `init_access.py` from `shared-public/`. Copy the lab folder into the course
 folder next to `shared-public/`, like `lab05/`. (The init cell also looks two and three levels up, so the repository can
 sit inside the course folder.) Notebooks 2–7 are still in the earlier format and will be converted the same way.

@@ -53,7 +53,10 @@ import matplotlib
 import matplotlib.pyplot as plt
 get_ipython().run_line_magic("matplotlib", "inline")
 plt.style.use("ggplot")
-from gofer.ok import check
+try:
+    from gofer.ok import check          # gofer-based labs; labs using pchem_check.py don't need it
+except ImportError:
+    pass
 from IPython.display import display
 from jupyterquiz import display_quiz
 

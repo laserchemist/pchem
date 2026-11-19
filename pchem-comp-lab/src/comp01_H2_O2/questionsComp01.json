@@ -26,6 +26,84 @@
   ]
  },
  {
+  "question": "The most probable distance of the hydrogen 1s electron from the nucleus is 1 bohr, yet R₁ₛ(r) is largest at r = 0. Why?",
+  "type": "multiple_choice",
+  "answers": [
+   {
+    "answer": "The radial distribution r²R² includes the area of a spherical shell, 4πr², which is zero at the nucleus and grows with r",
+    "correct": true,
+    "feedback": "Right: there is more room far out, so P(r) peaks at 1 bohr even though ψ is largest at the nucleus."
+   },
+   {
+    "answer": "The wavefunction is zero at the nucleus",
+    "correct": false,
+    "feedback": "For an s orbital ψ is largest at the nucleus: look at your plot of R₁ₛ(r)."
+   },
+   {
+    "answer": "The electron is repelled by the nucleus",
+    "correct": false,
+    "feedback": "The electron is attracted by the nucleus."
+   },
+   {
+    "answer": "The Born–Oppenheimer approximation moves the electron away from the nucleus",
+    "correct": false,
+    "feedback": "Born–Oppenheimer concerns nuclear motion, not where the electron is."
+   }
+  ]
+ },
+ {
+  "question": "Why do quantum chemistry programs build orbitals from Gaussians even though e^{−αr²} has the wrong shape at the nucleus?",
+  "type": "multiple_choice",
+  "answers": [
+   {
+    "answer": "The product of two Gaussians on different atoms is another Gaussian, so the integrals between atoms have fast exact formulas",
+    "correct": true,
+    "feedback": "Right: Boys (1950). The wrong shape is fixed by adding several Gaussians together (STO-nG and larger basis sets)."
+   },
+   {
+    "answer": "Gaussians have the correct nuclear cusp",
+    "correct": false,
+    "feedback": "Gaussians are flat at the nucleus: they have no cusp at all."
+   },
+   {
+    "answer": "Gaussians decay more slowly than Slater functions at large r",
+    "correct": false,
+    "feedback": "They decay faster (e^{−αr²}), which is another weakness."
+   },
+   {
+    "answer": "The variational principle only applies to Gaussian functions",
+    "correct": false,
+    "feedback": "It applies to any well-behaved trial function."
+   }
+  ]
+ },
+ {
+  "question": "A student reports a trial wavefunction for the H atom that gives E = −0.52 hartree. What can you conclude?",
+  "type": "multiple_choice",
+  "answers": [
+   {
+    "answer": "There is an error: by the variational principle no trial wavefunction can give an energy below the exact −0.5 hartree",
+    "correct": true,
+    "feedback": "Right: the exact ground-state energy is a lower bound for every trial function."
+   },
+   {
+    "answer": "It is a better wavefunction than the exact one",
+    "correct": false,
+    "feedback": "Nothing beats the exact wavefunction: its energy is the lowest possible."
+   },
+   {
+    "answer": "It needs a larger basis set to lower the energy further",
+    "correct": false,
+    "feedback": "A larger basis can only lower the energy, and it is already too low."
+   },
+   {
+    "answer": "This is expected for Gaussian basis functions",
+    "correct": false,
+    "feedback": "Gaussians give energies that are too high, never too low."
+   }
+  ]
+ },
+ {
   "question": "Every H-atom energy you computed was above −0.5 hartree. Why?",
   "type": "multiple_choice",
   "answers": [
@@ -52,6 +130,32 @@
   ]
  },
  {
+  "question": "Hylleraas reached the exact energy of helium far more closely than any single-orbital wavefunction could. What did he put into his trial function?",
+  "type": "multiple_choice",
+  "answers": [
+   {
+    "answer": "The distance between the two electrons, r₁₂, so the wavefunction could keep the electrons apart (electron correlation)",
+    "correct": true,
+    "feedback": "Right: explicitly correlated wavefunctions, the idea James and Coolidge and later Kołos and Wolniewicz used for H₂."
+   },
+   {
+    "answer": "A larger nuclear charge than Z = 2",
+    "correct": false,
+    "feedback": "The best effective charge is smaller than 2 (ζ = 27/16), because of screening."
+   },
+   {
+    "answer": "Gaussian functions",
+    "correct": false,
+    "feedback": "Gaussian basis sets came twenty years later (Boys, 1950)."
+   },
+   {
+    "answer": "Relativistic corrections",
+    "correct": false,
+    "feedback": "His calculations were non-relativistic; the key was the electron–electron distance."
+   }
+  ]
+ },
+ {
   "question": "What holds the single electron of H₂⁺ in a bond?",
   "type": "multiple_choice",
   "answers": [
@@ -74,6 +178,32 @@
     "answer": "Electron–electron correlation",
     "correct": false,
     "feedback": "There is only one electron, so there is no correlation."
+   }
+  ]
+ },
+ {
+  "question": "In H₂⁺ the antibonding orbital σu* = (φA − φB)/√(2(1 − S)) has a node:",
+  "type": "multiple_choice",
+  "answers": [
+   {
+    "answer": "at the midpoint of the bond, a plane perpendicular to the bond axis",
+    "correct": true,
+    "feedback": "Right: φA and φB are equal there, so their difference is zero; the electron is kept out of the bonding region."
+   },
+   {
+    "answer": "at each nucleus",
+    "correct": false,
+    "feedback": "At the nuclei σu* is largest in magnitude, with opposite signs on A and B."
+   },
+   {
+    "answer": "along the whole bond axis",
+    "correct": false,
+    "feedback": "σ orbitals are cylindrically symmetric and non-zero along the axis, except at the midpoint for σu*."
+   },
+   {
+    "answer": "only at large R",
+    "correct": false,
+    "feedback": "The node is there at every bond length, by symmetry."
    }
   ]
  },
