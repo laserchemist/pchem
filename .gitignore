@@ -11,3 +11,5 @@ __pycache__/
 *$py.class
 *.so
 .Python
+# results the computational labs pass from one lab to the next
+comp_chem/results/

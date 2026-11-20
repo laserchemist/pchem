@@ -14,23 +14,29 @@ point; the code is how you make the physics do something.
 
 ## Schedule
 
-| when | notebooks | goals |
+| when | labs | goals |
 |---|---|---|
 | **Session 1** (3 h) | 1. From the H atom to O₂ · 2. CO ab initio · 3. Vibrational levels | the variational principle; the chemical bond in H₂⁺ and H₂; electron correlation; spin states of O₂; basis sets; quantum vibrational levels and anharmonicity |
 | **Session 2** (3 h) | 4. CO₂ normal modes and IR · 5. ML surface · 6. Molecular dynamics | normal modes; IR selection rules; machine-learned surfaces; classical MD; spectra from dynamics |
 | **Project week** | 7. Your project | the full workflow for a new molecule; abstract and figures |
 
-Finish any parts of Notebooks 1–6 that you did not complete in the lab before you start your project.
+Finish any parts of Labs 1–6 that you did not complete in the lab session before you start your project. Each lab opens from its
+button on the course's **Computational Chemistry** page (`compute.html`).
 
 ## How to work
 
-- Open the notebooks in the `notebooks/` folder and run the cells **in order** (Shift + Enter). If something seems wrong,
-  use *Kernel → Restart & Run All*.
-- Cells marked `# YOUR CODE HERE` are yours to write. Most are followed by a **check** cell; when the check passes, move on.
-- **Questions** in the notebooks ask you to explain a result. Write your answers in the markdown cell provided (complete
-  sentences, with numbers). These answers are part of your grade.
+- Each lab is one notebook in its own folder (`comp_chem/comp01_H2_O2/`, `comp_chem/comp02_CO_ab_initio/`, ...). Run the
+  initialization cell first, then the cells **in order** (Shift + Enter). If something seems wrong, use *Kernel → Restart & Run All*.
+- Replace each `...` with your answer; most answers are one line. Stuck? Open the 💡 **Hint** under the question.
+- After each question, run its check cell, `lab.check('…')`. A ✅ means you got it; a ❌ tells you what to fix, often naming
+  the exact slip (a missing unit conversion, a sign, an index instead of a value). Try again as often as you like: there is no
+  penalty for retrying, and `lab.score()` at the end shows your record.
+- **Discussion questions** ask you to explain a result. Write your answers in the markdown cell under each question (complete
+  sentences, with numbers), then save the notebook and run its check.
+- Every lab starts with an **Abstract** (write it last) and ends with **Conclusions**, a **Reflection** and the **Submit** button.
+  Then export a PDF and upload it to Canvas.
 - Work with your lab partner, but each of you writes and runs your own notebook.
-- Each notebook saves its results (for example `co2_harmonic.npz`) for the next notebook. If a notebook is
+- Each lab saves its results (for example `co2_harmonic.npz`) in `comp_chem/results/` for the next lab. If a lab is
   missing its input, it uses a provided copy in `data/` automatically, so you can always continue.
 - The 3-D viewers can be rotated with the mouse and zoomed with the scroll wheel.
 
@@ -47,20 +53,20 @@ Finish any parts of Notebooks 1–6 that you did not complete in the lab before 
 
 The one awkward conversion is Newton's law: a [Å/fs²] = F [eV/Å] / m [amu] × 0.0096485. It is `lk.ACC` in the code.
 
-## Your project (Notebook 7)
+## Your project (Lab 7)
 
 Choose **one** molecule: N₂O, OCS, HCN, CS₂, H₂O or SO₂. (Check with your instructor so that the class covers several.)
 Apply the full workflow: geometry, harmonic modes and intensities, ML surface with a test-set error, MD at 300 K and one
-higher temperature, the MD spectrum, and a comparison with experiment. Notebook 7 gives the structure and lists what to change
-from your CO₂ code.
+higher temperature, the MD spectrum, and a comparison with experiment. Lab 7 gives the structure, lists what to change
+from your CO₂ code, and checks the physics at each step.
 
 Budget about 4–6 hours of your own time. Most of the computer time is in the training data (1–5 minutes) and the averaged
 spectra (2–4 minutes).
 
 ### What to hand in
 
-1. **Your completed notebooks 1–7**, run from top to bottom, with all questions answered.
-2. **An abstract** of at most 200 words. It should state:
+1. **Your completed Labs 1–7**, run from top to bottom, with all questions answered and submitted.
+2. **An abstract** of 150–250 words (in the Abstract cell of Lab 7). It should state:
    - the question,
    - what you did (methods, in one or two sentences: B3LYP/def2-SVP, harmonic analysis, Gaussian-process surface with
      its test error, classical MD),
@@ -76,15 +82,15 @@ A good abstract can be read without the figures, and a good figure can be read w
 
 > *We computed the infrared spectrum of CO₂ from first principles to identify which vibrations make it a greenhouse gas.
 > B3LYP/def2-SVP harmonic analysis gives the bend at 654 cm⁻¹ (2 × 33 km mol⁻¹), the symmetric stretch at 1389 cm⁻¹ (0 km mol⁻¹)
-> and the asymmetric stretch at 2472 cm⁻¹ (614 km mol⁻¹). A Gaussian-process surface trained on 320 DFT energies reproduces
-> held-out energies to 0.02 meV and the harmonic frequencies to 1 cm⁻¹. Classical molecular dynamics at 300 K on this surface ...*
+> and the asymmetric stretch at 2467 cm⁻¹ (614 km mol⁻¹). A Gaussian-process surface trained on 320 DFT energies reproduces
+> held-out energies to 0.02 meV and the harmonic frequencies to within 5 cm⁻¹. Classical molecular dynamics at 300 K on this surface ...*
 
 ## Grading (suggested; your instructor may change it)
 
 | part | weight |
 |---|---|
-| Notebooks 1–6: working code and answered questions | 40 % |
-| Project notebook: correct workflow, test-set error reported, sensible time step | 25 % |
+| Labs 1–6: answer checks, discussion answers, abstracts and conclusions | 40 % |
+| Project (Lab 7): correct workflow, test-set error reported, sensible time step | 25 % |
 | Abstract | 20 % |
 | Figures and captions | 15 % |
 

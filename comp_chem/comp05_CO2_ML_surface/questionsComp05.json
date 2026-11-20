@@ -1,0 +1,27 @@
+[
+ {"question": "Why train the model on (r₁, r₂, cos θ) instead of the 9 Cartesian coordinates?", "type": "multiple_choice", "answers": [
+   {"answer": "The energy can't change when the molecule is translated or rotated; these features already have that symmetry, so the model doesn't have to learn it", "correct": true, "feedback": "Right: build the physics into the inputs."},
+   {"answer": "Three numbers are faster to type", "correct": false, "feedback": "Speed is a bonus; the reason is symmetry."},
+   {"answer": "Cartesian coordinates can't describe a bent molecule", "correct": false, "feedback": "They describe any geometry, but they change when the molecule moves, while the energy doesn't."},
+   {"answer": "DFT needs internal coordinates", "correct": false, "feedback": "PySCF takes Cartesian coordinates."}]},
+ {"question": "Why is every training point entered twice, with r₁ and r₂ swapped?", "type": "multiple_choice", "answers": [
+   {"answer": "The two O atoms are identical, so E(r₁, r₂, cos θ) = E(r₂, r₁, cos θ); the swapped copies enforce that permutation symmetry", "correct": true, "feedback": "Right."},
+   {"answer": "To double the size of the test set", "correct": false, "feedback": "The test set is separate and is never used for training."},
+   {"answer": "To reduce the DFT noise", "correct": false, "feedback": "The copies have the same energy; they add symmetry, not new information about noise."},
+   {"answer": "It makes the GP train faster", "correct": false, "feedback": "It doubles the training set, so training is slower."}]},
+ {"question": "Why must the model be judged on a held-out test set rather than on its training data?", "type": "multiple_choice", "answers": [
+   {"answer": "A flexible model can fit its training points almost exactly while being wrong in between; only unseen data tests whether it has learned the surface", "correct": true, "feedback": "Right: the training error measures memory, the test error measures learning."},
+   {"answer": "The training data are less accurate", "correct": false, "feedback": "Both are B3LYP/def2-SVP."},
+   {"answer": "The test set is larger", "correct": false, "feedback": "It is smaller (100 vs 320)."},
+   {"answer": "Gaussian processes cannot predict training points", "correct": false, "feedback": "They can, very accurately; that is exactly why the training error is misleading."}]},
+ {"question": "The learning curve levels off near 0.02 meV. What sets this floor?", "type": "multiple_choice", "answers": [
+   {"answer": "The numerical noise of the DFT reference energies (the integration grid), which no amount of data removes", "correct": true, "feedback": "Right."},
+   {"answer": "The speed of the computer", "correct": false, "feedback": "Accuracy doesn't depend on speed."},
+   {"answer": "The Born–Oppenheimer approximation", "correct": false, "feedback": "Both the data and the model live on the same Born–Oppenheimer surface."},
+   {"answer": "The model has stopped learning because it is full", "correct": false, "feedback": "A GP keeps improving as long as the data contain information; the floor is in the data."}]},
+ {"question": "Along a bond stretch beyond the training range, the GP energy goes wrong. How can you tell from the GP alone?", "type": "multiple_choice", "answers": [
+   {"answer": "Its predicted uncertainty σ grows rapidly outside the region covered by training data", "correct": true, "feedback": "Right: a GP knows when it is extrapolating."},
+   {"answer": "The energy becomes negative", "correct": false, "feedback": "It may or may not; the uncertainty is the reliable warning."},
+   {"answer": "You can't; you always need a DFT check", "correct": false, "feedback": "A DFT check confirms it, but the GP's σ already warns you."},
+   {"answer": "The features become complex numbers", "correct": false, "feedback": "The features stay real for any geometry."}]}
+]

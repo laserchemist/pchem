@@ -1,0 +1,251 @@
+{
+  "lab": "comp04",
+  "about": "Answer key for Computational Lab 4 (pchem_check.py). Reference values: B3LYP/def2-SVP, PySCF 2.x, instructor run. Edit this plain copy in src/; the build tool encodes the students' copy.",
+  "common_mistakes": [
+    {
+      "factor": 27.211386,
+      "feedback": "Off by a factor of 27.2: a hartree ↔ eV conversion is missing, or used twice."
+    },
+    {
+      "factor": 97.17442,
+      "feedback": "Off by a factor of 97.2 = 27.211/0.5292²: the Hessian is still in hartree/bohr². Multiply by <code>HARTREE_TO_EV</code> and divide by <code>BOHR_TO_ANG**2</code>."
+    },
+    {
+      "factor": 0.529177,
+      "feedback": "Off by a factor of 0.529: a second derivative has <b>two</b> lengths, so it needs bohr → Å twice: <code>/ BOHR_TO_ANG**2</code>."
+    },
+    {
+      "factor": 0.280028,
+      "feedback": "Off by a factor of 0.28 = 0.529²: the bohr² → Å² conversion is missing: divide by <code>BOHR_TO_ANG**2</code>."
+    }
+  ],
+  "questions": {
+    "1.1": {
+      "title": "Equilibrium bond length",
+      "needs": [
+        "energy_of_r",
+        "r_e"
+      ],
+      "tests": [
+        {
+          "value": "energy_of_r(1.16)",
+          "answer": -188.4429951,
+          "tol": 1e-06,
+          "hint": "<code>energy_of_r(r)</code> should return the B3LYP energy in hartree: <code>co2_mf(linear_co2(r)).e_tot</code>."
+        },
+        {
+          "value": "r_e",
+          "answer": 1.163087473,
+          "tol": 0.001,
+          "hint": "B3LYP/def2-SVP gives r_e close to the experimental 1.160 Å.",
+          "wrong": [
+            {
+              "when": "abs(value - 1.10) < 2e-3 or abs(value - 1.22) < 2e-3",
+              "feedback": "The minimiser stopped at the edge of the search range (1.10 or 1.22 Å). Your function probably doesn't return the energy: it must <b>return</b> <code>co2_mf(linear_co2(r)).e_tot</code>."
+            }
+          ]
+        }
+      ],
+      "ok": "Within a few thousandths of an ångström of experiment."
+    },
+    "2.1": {
+      "title": "The Hessian in eV/Å²",
+      "needs": [
+        "H",
+        "H4"
+      ],
+      "tests": [
+        {
+          "assert": "np.shape(H) == (9, 9)",
+          "hint": "<code>H</code> should be a 9 × 9 matrix: <code>H4.transpose(0, 2, 1, 3).reshape(9, 9)</code>."
+        },
+        {
+          "value": "H[5, 5]",
+          "answer": 195.2887017,
+          "tol": 0.05,
+          "hint": "<code>H = H4.transpose(0, 2, 1, 3).reshape(9, 9) * HARTREE_TO_EV / BOHR_TO_ANG**2</code>; H[5, 5] is about 200 eV/Å².",
+          "wrong": [
+            {
+              "when": "abs(value - (H4.reshape(9, 9) * HARTREE_TO_EV / BOHR_TO_ANG**2)[5, 5]) < 1e-6",
+              "feedback": "The units are right, but the rows and columns are in the wrong order. Reorder the axes to (atom a, direction i, atom b, direction j) <b>before</b> reshaping: <code>H4.transpose(0, 2, 1, 3).reshape(9, 9)</code>."
+            }
+          ]
+        },
+        {
+          "assert": "np.allclose(H, H.T, atol=1e-6)",
+          "hint": "A Hessian must be symmetric. Check the order of the axes in <code>transpose(0, 2, 1, 3)</code>."
+        }
+      ],
+      "ok": "81 second derivatives in one matrix, in the units used for the rest of the course."
+    },
+    "2.2": {
+      "title": "Finite-difference check",
+      "needs": [
+        "fd",
+        "H"
+      ],
+      "tests": [
+        {
+          "value": "fd",
+          "answer": 196.1791786,
+          "tol": 0.1,
+          "hint": "<code>fd = (Ep - 2 * E0 + Em) / h**2 * HARTREE_TO_EV</code>: the energies are in hartree, h in Å.",
+          "wrong": [
+            {
+              "when": "abs(value / answer - h) < 0.01 * h",
+              "feedback": "Divide by <b>h²</b>, not h: a second derivative has a length squared in the denominator."
+            },
+            {
+              "when": "abs(value / answer + 1) < 0.01",
+              "feedback": "Wrong sign: the formula is E(+h) − 2E(0) + E(−h). A minimum curves upward, so the result is positive."
+            }
+          ]
+        },
+        {
+          "assert": "abs(fd - H[5, 5]) < 1.5",
+          "hint": "Your finite difference should agree with the analytic <code>H[5, 5]</code> to within about 1 eV/Å² (0.5 %)."
+        }
+      ],
+      "ok": "Analytic and numerical derivatives agree to 0.5 %: the Hessian is what it claims to be."
+    },
+    "3.1": {
+      "title": "Normal-mode wavenumbers",
+      "needs": [
+        "Hmw",
+        "wn"
+      ],
+      "tests": [
+        {
+          "value": "wn",
+          "answer": [
+            653.7128853,
+            653.7128853,
+            1388.999139,
+            2466.89476
+          ],
+          "tol": 1.0,
+          "hint": "<code>Hmw = H / np.sqrt(np.outer(m3, m3))</code>: divide each element by √(mᵢmⱼ).",
+          "wrong": [
+            {
+              "when": "np.max(value) > 5000",
+              "feedback": "The frequencies are far too high: the Hessian hasn't been <b>mass-weighted</b>. Divide by <code>np.sqrt(np.outer(m3, m3))</code>."
+            },
+            {
+              "when": "np.max(value) < 1000",
+              "feedback": "The frequencies are too low: divide by the <b>square root</b> of the mass product, √(mᵢmⱼ), not by mᵢmⱼ."
+            },
+            {
+              "when": "abs(np.max(value) / np.max(answer) - 1 / np.sqrt(np.mean(m3))) < 0.05 or np.max(value) / np.max(answer) > 2",
+              "feedback": "Check the mass weighting: <code>H / np.sqrt(np.outer(m3, m3))</code>."
+            }
+          ]
+        }
+      ],
+      "ok": "Two degenerate bends, a symmetric and an asymmetric stretch: 3N − 5 = 4."
+    },
+    "3.2d": {
+      "title": "Discussion: the modes",
+      "open": "Question 3.2 Discussion",
+      "min_chars": 60
+    },
+    "4.1": {
+      "title": "IR intensities",
+      "needs": [
+        "ir_intensity",
+        "A"
+      ],
+      "tests": [
+        {
+          "value": "A",
+          "answer": [
+            32.86988281,
+            32.86988281,
+            0.001077550848,
+            613.4725557
+          ],
+          "tol": 2.0,
+          "hint": "<code>dmu = (dipole(X0 + dX) - dipole(X0 - dX)) / (2 * delta)</code> and <code>return 42.256 * np.sum(dmu**2)</code>.",
+          "wrong": [
+            {
+              "when": "abs(value[3] / answer[3] - 4) < 0.1",
+              "feedback": "Four times too large: a central difference divides by the full distance between the two points, <b>2δ</b>."
+            },
+            {
+              "when": "abs(value[3] * 42.256 / answer[3] - 1) < 0.02",
+              "feedback": "The units factor is missing: A (km/mol) = <b>42.256</b> × |∂μ/∂Q|²."
+            },
+            {
+              "when": "abs(value[3] / answer[3] - 1 / 4) < 0.02",
+              "feedback": "Four times too small: divide by 2δ, the distance between the two points (not 4δ, and not δ twice)."
+            },
+            {
+              "when": "value[2] > 5",
+              "feedback": "The symmetric stretch (mode 2) should have zero intensity. Check that each intensity uses its own mode, <code>disp[:, k]</code>."
+            }
+          ]
+        }
+      ],
+      "ok": "Bend and asymmetric stretch strong, symmetric stretch exactly dark: symmetry, computed."
+    },
+    "4.2d": {
+      "title": "Discussion: selection rules",
+      "open": "Question 4.2 Discussion",
+      "min_chars": 60
+    },
+    "5.1": {
+      "title": "The Earth's emission peak",
+      "needs": [
+        "x",
+        "B",
+        "nu_peak"
+      ],
+      "tests": [
+        {
+          "value": "nu_peak",
+          "answer": 565.0,
+          "tol": 2,
+          "hint": "<code>x = nu / lk.EV_TO_CM1 / (lk.KB_EV * T)</code>, <code>B = nu**3 / np.expm1(x)</code> and <code>nu_peak = nu[np.argmax(B)]</code>.",
+          "wrong": [
+            {
+              "when": "isinstance(value, (int, np.integer))",
+              "feedback": "That is an index (a position in the array). Use it to pick the wavenumber: <code>nu[np.argmax(B)]</code>."
+            },
+            {
+              "when": "value < 150",
+              "feedback": "The curve peaks at the very start of the range. Check <code>x</code>: it should be about 0.5 at 100 cm⁻¹ and 15 at 3000 cm⁻¹ (ν̃ in eV divided by k<sub>B</sub>T in eV, with T = 288 K)."
+            },
+            {
+              "when": "value > 2500",
+              "feedback": "The curve keeps rising: check <code>x</code> (it should grow with ν̃, ν̃ in eV divided by k<sub>B</sub>T) and use <code>np.expm1(x)</code> in the denominator."
+            },
+            {
+              "when": "abs(value - answer) > 3 and abs(value - answer) < 400",
+              "feedback": "Check the power: B ∝ <b>ν̃³</b>/(eˣ − 1)."
+            }
+          ]
+        }
+      ],
+      "ok": "The Earth radiates most strongly right where CO₂ bends."
+    },
+    "5.2d": {
+      "title": "Discussion: the greenhouse effect",
+      "open": "Question 5.2 Discussion",
+      "min_chars": 60
+    },
+    "abstract": {
+      "title": "Abstract",
+      "open": "Your abstract goes in the cell below",
+      "min_chars": 400
+    },
+    "7c": {
+      "title": "Conclusions",
+      "open": "Question 7. Conclusions",
+      "min_chars": 300
+    },
+    "8d": {
+      "title": "Reflection",
+      "open": "**Question 8.**",
+      "min_chars": 60
+    }
+  }
+}

@@ -1,0 +1,252 @@
+{
+  "lab": "comp05",
+  "about": "Answer key for Computational Lab 5 (pchem_check.py). Reference values: instructor run (B3LYP/def2-SVP test set, seed 2024). Edit this plain copy in src/; the build tool encodes the students' copy.",
+  "common_mistakes": [
+    {
+      "factor": 1000,
+      "feedback": "Off by a factor of 1000: the answer is asked for in <b>meV</b> (1 eV = 1000 meV)."
+    },
+    {
+      "factor": 27.211386,
+      "feedback": "Off by a factor of 27.2: a hartree ↔ eV conversion is missing, or used twice."
+    }
+  ],
+  "questions": {
+    "1.1": {
+      "title": "Sampling along the normal modes",
+      "needs": [
+        "sample_geometry",
+        "omega",
+        "modes"
+      ],
+      "setup": "_r = np.random.default_rng(1)\nXs = sample_geometry(_r, 0.6)\nQs = modes.T @ (np.sqrt(m3) * (Xs - X0).ravel())\nE_harm = 0.5 * np.sum((omega * Qs)**2) / lk.ACC\nE_expect = 0.6 * np.random.default_rng(1).random()",
+      "tests": [
+        {
+          "value": "E_harm / E_expect",
+          "answer": 1.0,
+          "rtol": 1e-06,
+          "show_value": false,
+          "hint": "The geometry should hold exactly <code>E_tot</code> of harmonic energy. Check <code>E_tot = E_max * rng.random()</code> (drawn first) and <code>Q = np.sqrt(2 * eps * lk.ACC) / omega * signs</code>.",
+          "wrong": [
+            {
+              "when": "abs(value * lk.ACC - 1) < 0.01",
+              "feedback": "The geometry holds about 100 times too much energy: the amplitude needs <code>lk.ACC</code>, <code>Q = np.sqrt(2 * eps * lk.ACC) / omega</code>, because ½ω²Q² is in amu·Å²/fs², which is 1/ACC eV."
+            },
+            {
+              "when": "abs(value - 0.5) < 0.01",
+              "feedback": "Half the energy: ε = ½ω²Q², so Q = √(<b>2</b>ε)/ω. The factor 2 is missing."
+            },
+            {
+              "when": "abs(value - 1 / 0.6) < 0.01",
+              "feedback": "<code>E_tot</code> should be between 0 and <code>E_max</code>: <code>E_max * rng.random()</code>."
+            },
+            {
+              "when": "abs(value - 2) < 0.01",
+              "feedback": "Twice the energy: Q = √(2ε)/ω, not 2√ε/ω or √(4ε)/ω."
+            }
+          ]
+        }
+      ],
+      "ok": "Each geometry carries exactly the harmonic energy you gave it, shared at random among the four modes."
+    },
+    "1.2": {
+      "title": "Your test set",
+      "needs": [
+        "E_test",
+        "mu_test"
+      ],
+      "tests": [
+        {
+          "assert": "E_test.min() > -1e-3",
+          "hint": "Energies relative to the minimum can't be negative: <code>E_test = np.array([e for e, _ in ED]) - E_min</code>.",
+          "wrong": [
+            {
+              "when": "E_test.min() < -100",
+              "feedback": "These are total energies (about −5000 eV). Subtract the minimum: <code>- E_min</code>."
+            }
+          ]
+        },
+        {
+          "assert": "E_test.max() < 0.9 and 0.15 < E_test.mean() < 0.45",
+          "hint": "The energies should lie between 0 and about 0.6 eV, averaging about 0.3 eV. Check that you subtracted <code>E_min</code> (in eV).",
+          "wrong": [
+            {
+              "when": "E_test.max() > 10",
+              "feedback": "These energies are far too large for 0.6 eV of vibrational energy. Did you subtract <code>E_min</code>, and are both in eV?"
+            }
+          ]
+        }
+      ],
+      "ok": "100 DFT points the model will never see during training: an honest test."
+    },
+    "2.1": {
+      "title": "Symmetry-adapted features",
+      "needs": [
+        "features"
+      ],
+      "tests": [
+        {
+          "value": "features(X0)",
+          "answer": [
+            1.163087473,
+            1.163087473,
+            -1.0
+          ],
+          "tol": 1e-06,
+          "hint": "At the linear minimum the features are (r_e, r_e, −1). <code>cos = np.sum(b1 * b2, axis=-1) / (r1 * r2)</code>.",
+          "wrong": [
+            {
+              "when": "abs(value[2] - 1) < 1e-6",
+              "feedback": "cos θ = +1 for the linear molecule: one bond vector points the wrong way. Both start at C: <code>b1 = O₁ − C</code>, <code>b2 = O₂ − C</code> (as given)."
+            },
+            {
+              "when": "abs(value[2]) > 1.01",
+              "feedback": "|cos θ| > 1: divide the dot product by the two bond lengths, <code>/ (r1 * r2)</code>."
+            }
+          ]
+        },
+        {
+          "value": "features(np.array([[1.0, 0, 0], [0, 0, 0], [0, 2.0, 0]]))",
+          "answer": [
+            1.0,
+            2.0,
+            0.0
+          ],
+          "tol": 1e-09,
+          "hint": "For bonds of 1 and 2 Å at 90°, the features are (1, 2, 0). Use <code>axis=-1</code> in the sum so it works for one geometry or many."
+        }
+      ],
+      "ok": "Three numbers that don't change when the molecule moves or turns."
+    },
+    "3.1": {
+      "title": "Gaussian process fit",
+      "needs": [
+        "fit_energy_gp",
+        "gp",
+        "rms"
+      ],
+      "setup": "_F = F_test[:5]\n_asym = np.abs(gp.predict((_F - f_mean) / f_scale) - gp.predict((_F[:, [1, 0, 2]] - f_mean) / f_scale)).max()",
+      "tests": [
+        {
+          "assert": "_asym < 1e-5",
+          "hint": "The surface must give the same energy when the two O atoms are swapped. Add the swapped copy: <code>Fs = np.concatenate([F, F[:, [1, 0, 2]]])</code> and <code>Es = np.concatenate([E, E])</code>.",
+          "wrong": [
+            {
+              "when": "_asym > 1e-5",
+              "feedback": "Your surface gives different energies for (r₁, r₂) and (r₂, r₁): the O ↔ O swap isn't built in. Train on both copies, <code>F[:, [1, 0, 2]]</code> with the same energies <code>E</code>."
+            }
+          ]
+        },
+        {
+          "value": "rms",
+          "answer": 0.02153400329,
+          "rtol": 0.5,
+          "hint": "<code>rms = np.sqrt(np.mean((E_pred - E_test)**2)) * 1000</code> (meV): a few hundredths of a meV.",
+          "wrong": [
+            {
+              "when": "value < 1e-4",
+              "feedback": "Far too small: take the <b>square root</b> of the mean squared error, and convert eV → meV (× 1000)."
+            },
+            {
+              "when": "value > 5",
+              "feedback": "Much larger than expected. Compare <code>E_pred</code> with <code>E_test</code> (both relative energies in eV), and check that the GP was trained with the swapped copies."
+            }
+          ]
+        }
+      ],
+      "ok": "Hundredths of a meV on data it never saw: as accurate as the DFT numbers themselves."
+    },
+    "5.1d": {
+      "title": "Discussion: learning curve and extrapolation",
+      "open": "Question 5.1 Discussion",
+      "min_chars": 60
+    },
+    "6.1": {
+      "title": "Harmonic frequencies of the GP surface",
+      "needs": [
+        "wn_gp",
+        "wn_dft"
+      ],
+      "tests": [
+        {
+          "value": "wn_gp",
+          "answer": [
+            653.7664909,
+            653.7664909,
+            1388.48361,
+            2471.783134
+          ],
+          "tol": 3,
+          "hint": "<code>wn_gp = lk.omega_to_wavenumber(np.sqrt(np.abs(lam[5:]) * lk.ACC))</code>: the last four eigenvalues are the vibrations.",
+          "wrong": [
+            {
+              "when": "np.max(value) < 100",
+              "feedback": "These are the five near-zero eigenvalues (translations and rotations). The vibrations are the <b>last four</b>, <code>lam[5:]</code>."
+            },
+            {
+              "when": "np.max(value) < 500",
+              "feedback": "About 10× too low: ω (rad/fs) = <code>np.sqrt(lam * lk.ACC)</code>; <code>lk.ACC</code> is missing."
+            }
+          ]
+        },
+        {
+          "assert": "np.max(np.abs(wn_gp - wn_dft)) < 10",
+          "hint": "The GP frequencies should agree with DFT within a few cm⁻¹."
+        }
+      ],
+      "ok": "The learned surface has the right curvature: the same frequencies as DFT, from an energy fit alone."
+    },
+    "7.1": {
+      "title": "Bond-charge dipole model",
+      "needs": [
+        "c_dip",
+        "rms_mu"
+      ],
+      "tests": [
+        {
+          "value": "c_dip[0]",
+          "answer": -0.2714301707,
+          "tol": 0.003,
+          "hint": "<code>c_dip = np.linalg.lstsq(A_train, mu_train.ravel(), rcond=None)[0]</code>: four coefficients; the first is the O charge at equilibrium, about −0.27 e."
+        },
+        {
+          "value": "rms_mu",
+          "answer": 0.01338921847,
+          "rtol": 0.3,
+          "hint": "<code>rms_mu = np.sqrt(np.mean(np.sum((mu_pred - mu_test)**2, axis=1)))</code>: sum over x, y, z, average over geometries, then the square root.",
+          "wrong": [
+            {
+              "when": "abs(value * np.sqrt(3) / answer - 1) < 0.1",
+              "feedback": "√3 too small: <b>sum</b> the squared errors over x, y and z (<code>axis=1</code>) before averaging over the geometries."
+            },
+            {
+              "when": "value < 0.002",
+              "feedback": "Too small: take the square root at the end."
+            }
+          ]
+        }
+      ],
+      "ok": "Four numbers reproduce every test dipole to about 0.01 D."
+    },
+    "7.2d": {
+      "title": "Discussion: charges and charge flux",
+      "open": "Question 7.2 Discussion",
+      "min_chars": 60
+    },
+    "abstract": {
+      "title": "Abstract",
+      "open": "Your abstract goes in the cell below",
+      "min_chars": 400
+    },
+    "9c": {
+      "title": "Conclusions",
+      "open": "Question 9. Conclusions",
+      "min_chars": 300
+    },
+    "10d": {
+      "title": "Reflection",
+      "open": "**Question 10.**",
+      "min_chars": 60
+    }
+  }
+}

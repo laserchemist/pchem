@@ -1,0 +1,27 @@
+[
+ {"question": "How many vibrational modes does CO₂ have?", "type": "multiple_choice", "answers": [
+   {"answer": "4 = 3N − 5, because a linear molecule has only 2 rotations", "correct": true, "feedback": "Right: rotation about the molecular axis moves no nuclei."},
+   {"answer": "3 = 3N − 6", "correct": false, "feedback": "3N − 6 is for nonlinear molecules (H₂O, SO₂)."},
+   {"answer": "9 = 3N", "correct": false, "feedback": "3 translations and 2 rotations are not vibrations."},
+   {"answer": "2, one for each bond", "correct": false, "feedback": "The bend is a vibration too, and it is doubly degenerate."}]},
+ {"question": "Why must the Hessian be mass-weighted before diagonalising it?", "type": "multiple_choice", "answers": [
+   {"answer": "Newton's equations m ẍ = −Hx become an eigenvalue problem with eigenvalues ω² only after scaling each coordinate by √m", "correct": true, "feedback": "Right: the eigenvalues of H/√(mᵢmⱼ) are ω²."},
+   {"answer": "To convert hartree to eV", "correct": false, "feedback": "That is a unit conversion, applied separately."},
+   {"answer": "To remove translations and rotations", "correct": false, "feedback": "Those still appear, as five near-zero eigenvalues."},
+   {"answer": "It makes the matrix symmetric", "correct": false, "feedback": "The Hessian is already symmetric."}]},
+ {"question": "Why is the symmetric stretch of CO₂ IR-inactive?", "type": "multiple_choice", "answers": [
+   {"answer": "The molecule keeps its inversion centre throughout the vibration, so the dipole stays zero and dμ/dQ = 0", "correct": true, "feedback": "Right: the same reason O₂ and N₂ don't absorb IR."},
+   {"answer": "Its frequency is too high", "correct": false, "feedback": "Frequency doesn't decide IR activity; the change of dipole does."},
+   {"answer": "The carbon atom doesn't move", "correct": false, "feedback": "True, but what matters is that the bond dipoles always cancel."},
+   {"answer": "CO₂ has no permanent dipole", "correct": false, "feedback": "Neither does it in the bend or asymmetric stretch at equilibrium, yet those absorb. What matters is the change of dipole."}]},
+ {"question": "Why are the two bending modes of CO₂ degenerate?", "type": "multiple_choice", "answers": [
+   {"answer": "The linear molecule is cylindrically symmetric, so bending in x or in y costs the same energy", "correct": true, "feedback": "Right."},
+   {"answer": "The two oxygen atoms are identical", "correct": false, "feedback": "That is why the stretches split into symmetric and asymmetric combinations, not why the bends are degenerate."},
+   {"answer": "Numerical error", "correct": false, "feedback": "The degeneracy is exact by symmetry."},
+   {"answer": "One bend is a rotation", "correct": false, "feedback": "Both are vibrations; the rotations are among the five near-zero eigenvalues."}]},
+ {"question": "Why does the CO₂ bend matter more for climate than the much stronger asymmetric stretch?", "type": "multiple_choice", "answers": [
+   {"answer": "The bend (667 cm⁻¹, 15 µm) lies near the peak of the Earth's 288 K thermal emission; the asymmetric stretch (2349 cm⁻¹) is far out in its tail", "correct": true, "feedback": "Right: absorption only matters where there is radiation to absorb."},
+   {"answer": "The bend is doubly degenerate", "correct": false, "feedback": "That doubles its intensity, but the position under the Planck curve is what matters."},
+   {"answer": "The asymmetric stretch is IR-inactive", "correct": false, "feedback": "It is the strongest IR band of CO₂."},
+   {"answer": "The Sun emits at 667 cm⁻¹", "correct": false, "feedback": "The Sun's emission peaks in the visible; the infrared that CO₂ absorbs comes from the Earth."}]}
+]

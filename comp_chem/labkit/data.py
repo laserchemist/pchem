@@ -23,3 +23,20 @@ def load_co2_samples():
     d = np.load(data_path("co2_b3lyp_samples.npz"))
     return {"symbols": [str(s) for s in d["symbols"]], "X": d["X"], "dE_eV": d["dE_eV"],
             "dipole_D": d["dipole_D"], "X0": d["X0"], "method": str(d["method"])}
+
+
+def results_path(name):
+    """Where a lab saves a result for the next lab: comp_chem/results/<name> (the folder is created if needed)."""
+    folder = os.path.join(os.path.dirname(_HERE), "results")
+    os.makedirs(folder, exist_ok=True)
+    return os.path.join(folder, name)
+
+
+def find_result(name):
+    """Path of a result saved by an earlier lab, or of the reference copy in data/ if there is none (says which)."""
+    mine = os.path.join(os.path.dirname(_HERE), "results", name)
+    if os.path.exists(mine):
+        print(f"using your saved {name} (from the earlier lab)")
+        return mine
+    print(f"{name} not found in results/: using the reference copy in data/")
+    return data_path(name)

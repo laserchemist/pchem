@@ -1,0 +1,85 @@
+{
+  "lab": "comp07",
+  "about": "Answer key for Computational Lab 7, the project (pchem_check.py). The checks test physics that holds for every molecule in the list (no molecule-specific answers). Edit this plain copy in src/; the build tool encodes the students' copy.",
+  "common_mistakes": [
+    {"factor": 27.211386, "feedback": "Off by a factor of 27.2: a hartree ↔ eV conversion is missing, or used twice."},
+    {"factor": 0.529177, "feedback": "Off by a factor of 0.529: a bohr ↔ Å conversion is missing, or used twice. The gradient is in hartree/<b>bohr</b>."}
+  ],
+  "questions": {
+    "0.1": {
+      "title": "Your molecule", "needs": ["SYSTEM"],
+      "tests": [
+        {"assert": "SYSTEM in SYSTEMS", "hint": "Set <code>SYSTEM</code> to one of the names in the table, as a string, e.g. <code>SYSTEM = \"OCS\"</code>.",
+         "wrong": [{"when": "isinstance(SYSTEM, str) and SYSTEM.upper() in [k.upper() for k in SYSTEMS]", "feedback": "Check the capitals: the names are written exactly as <code>\"N2O\"</code>, <code>\"OCS\"</code>, <code>\"HCN\"</code>, <code>\"CS2\"</code>, <code>\"H2O\"</code>, <code>\"SO2\"</code>."},
+                   {"when": "not isinstance(SYSTEM, str)", "feedback": "<code>SYSTEM</code> must be a string: put the name in quotes, e.g. <code>SYSTEM = \"OCS\"</code>."}]}
+      ],
+      "ok": "Good choice. Every check from here on tests physics that holds for any of the six molecules."
+    },
+    "1.1": {
+      "title": "Energy, gradient and geometry", "needs": ["energy_and_gradient", "X0", "res"],
+      "setup": "_x = X0.ravel().copy(); _x[2] += 0.03\n_e, _g = energy_and_gradient(_x)\n_xp = _x.copy(); _xp[2] += 0.004\n_xm = _x.copy(); _xm[2] -= 0.004\n_fd = (energy_and_gradient(_xp)[0] - energy_and_gradient(_xm)[0]) / 0.008\n_eref = run_dft(_x.reshape(3, 3)).e_tot * lk.HARTREE_TO_EV",
+      "tests": [
+        {"value": "_e / _eref", "answer": 1.0, "rtol": 1e-09, "show_value": false, "hint": "The energy should be in eV: <code>mf.e_tot * lk.HARTREE_TO_EV</code>."},
+        {"value": "_g[2] / _fd", "answer": 1.0, "rtol": 0.01, "show_value": false,
+         "hint": "The gradient should match a finite difference of your energy: <code>g = mf.nuc_grad_method().kernel() * lk.HARTREE_TO_EV / lk.BOHR_TO_ANG</code>, returned as <code>g.ravel()</code>."},
+        {"assert": "np.abs(res.jac).max() < 0.01", "hint": "The optimisation hasn't converged: the gradient at <code>X0</code> should be near zero. Run the optimisation cell again after fixing the function."}
+      ],
+      "ok": "Energy and gradient agree with each other, and the optimiser found a minimum."
+    },
+    "2.1": {
+      "title": "Harmonic analysis and IR intensities", "needs": ["H", "wn", "A", "n_modes"],
+      "tests": [
+        {"assert": "np.shape(H) == (9, 9) and np.allclose(H, H.T, atol=1e-6)", "hint": "<code>H</code> should be a symmetric 9 × 9 matrix: <code>mf0.Hessian().kernel().transpose(0, 2, 1, 3).reshape(9, 9)</code>, then the units."},
+        {"assert": "300 < wn.max() < 4500", "hint": "The highest vibration should be a stretch somewhere between 1000 and 4000 cm⁻¹. Check the units of <code>H</code>: <code>* lk.HARTREE_TO_EV / lk.BOHR_TO_ANG**2</code>.",
+         "wrong": [{"when": "wn.max() < 300", "feedback": "All frequencies are far too low: the Hessian is probably still in hartree/bohr². Convert: <code>* lk.HARTREE_TO_EV / lk.BOHR_TO_ANG**2</code>."},
+                   {"when": "wn.max() > 4500", "feedback": "The frequencies are too high: check the unit conversion of <code>H</code> (divide by <code>lk.BOHR_TO_ANG**2</code>, not multiply)."}]},
+        {"assert": "n_modes == (4 if LINEAR else 3)", "hint": "A linear triatomic has 3N − 5 = 4 vibrations; a bent one 3N − 6 = 3. Check the Hessian.",
+         "wrong": [{"when": "n_modes > 4", "feedback": "Too many vibrations: some translations or rotations came out above 100 cm⁻¹. The rows and columns of H may be in the wrong order: <code>transpose(0, 2, 1, 3)</code> before <code>reshape</code>."}]},
+        {"assert": "np.all(A >= 0) and A.max() > 1", "hint": "Intensities: <code>42.256 * np.sum(((dipole_dft(X0 + dX) - dipole_dft(X0 - dX)) / 0.02)**2)</code>, one per mode."}
+      ],
+      "ok": "The right number of vibrations, with intensities. Watch the modes before you assign them."
+    },
+    "3.1": {
+      "title": "Sampling", "needs": ["sample_geometry", "omega", "modes"],
+      "setup": "Xs = sample_geometry(np.random.default_rng(1), 0.6)\nQs = modes.T @ (np.sqrt(m3) * (Xs - X0).ravel())\nE_harm = 0.5 * np.sum((omega * Qs)**2) / lk.ACC\nE_expect = 0.6 * np.random.default_rng(1).random()",
+      "tests": [
+        {"value": "E_harm / E_expect", "answer": 1.0, "rtol": 1e-06, "show_value": false,
+         "hint": "Each geometry should hold exactly <code>E_tot</code> of harmonic energy: <code>E_tot = E_max * rng.random()</code> and <code>Q = np.sqrt(2 * eps * lk.ACC) / omega * signs</code>.",
+         "wrong": [{"when": "abs(value * lk.ACC - 1) < 0.01", "feedback": "About 100 times too much energy: <code>lk.ACC</code> is missing from Q."},
+                   {"when": "abs(value - 0.5) < 0.01", "feedback": "Half the energy: Q = √(<b>2</b>ε)/ω."}]}
+      ],
+      "ok": "Same sampler as Lab 5, now for any number of modes."
+    },
+    "4.1": {
+      "title": "Learned surface and dipole", "needs": ["gp", "rms", "c_dip", "rms_mu", "Fs"],
+      "setup": "_F = F_te[:5]\n_asym = np.abs(gp.predict((_F - f_mean) / f_scale) - gp.predict((_F[:, [1, 0, 2]] - f_mean) / f_scale)).max()",
+      "tests": [
+        {"assert": "symmetric or len(Fs) == len(F_tr)", "hint": "The outer atoms of your molecule differ, so swapping r₁ and r₂ gives a <b>different</b> molecule: don't add swapped copies (<code>... if symmetric else F_tr</code>)."},
+        {"assert": "(not symmetric) or _asym < 1e-5", "hint": "Your outer atoms are identical, so the surface must give the same energy for (r₁, r₂) and (r₂, r₁): add the swapped copies when <code>symmetric</code>."},
+        {"assert": "rms < 2.0", "hint": "The test RMS energy error should be well under 1 meV. Check the training set <code>Fs</code>, <code>Es</code> (same length, energies relative to the minimum)."},
+        {"assert": "c_dip.size == (4 if symmetric else 8) and rms_mu < 0.1", "hint": "The dipole model needs 4 coefficients if the outer atoms are identical, 8 if not: <code>A = A1 + A2 if symmetric else np.concatenate([A1, A2], -1)</code>."}
+      ],
+      "ok": "A surface and dipole model for your molecule, judged on data it never saw."
+    },
+    "5.1": {
+      "title": "Molecular dynamics", "needs": ["forces", "run_md", "et"],
+      "setup": "_Xt = X0 + np.random.default_rng(0).normal(scale=0.02, size=(3, 3))\n_Fm = forces(_Xt)\n_x = _Xt.ravel()\n_ref = np.zeros(9)\nfor _k in range(9):\n    _p = _x.copy(); _p[_k] += 1e-3\n    _q = _x.copy(); _q[_k] -= 1e-3\n    _ref[_k] = -(energy(_p.reshape(3, 3)) - energy(_q.reshape(3, 3))) / 2e-3\n_ref = _ref.reshape(3, 3)",
+      "tests": [
+        {"assert": "np.allclose(_Fm, _ref, atol=1e-4)", "hint": "<code>return -((e[0::2] - e[1::2]) / (2 * h)).reshape(3, 3)</code>.",
+         "wrong": [{"when": "np.allclose(_Fm, -_ref, atol=1e-4)", "feedback": "Wrong sign: the force is <b>minus</b> the gradient."}]},
+        {"assert": "1000 * np.ptp(et) < 5", "hint": "The total energy should be conserved to a few meV over 2 ps. Check the three Verlet lines (as in Lab 6) and the time step <code>cfg[\"dt\"]</code>."}
+      ],
+      "ok": "Stable, energy-conserving dynamics for your molecule."
+    },
+    "6.1": {
+      "title": "Figure saved", "needs": ["SYSTEM"],
+      "tests": [{"assert": "os.path.exists(f'{SYSTEM}_figure1.png')", "hint": "Run the Figure 1 cell: it saves <code>&lt;SYSTEM&gt;_figure1.png</code> in this folder."}],
+      "ok": "Figure 1 saved. Download it from the file browser for your report."
+    },
+    "7.1t": {"title": "Results table", "open": "Question 7.1 Results table", "min_chars": 300},
+    "7.2d": {"title": "Discussion", "open": "Question 7.2 Discussion", "min_chars": 100},
+    "abstract": {"title": "Abstract", "open": "Your abstract goes in the cell below", "min_chars": 600},
+    "8c": {"title": "Conclusions", "open": "Question 8. Conclusions", "min_chars": 300},
+    "9d": {"title": "Reflection", "open": "**Question 9.**", "min_chars": 60}
+  }
+}

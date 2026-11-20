@@ -42,6 +42,7 @@ The answer key (plain JSON while you write it)
              "wrong": [                          # typical wrong answers, tried in order
                {"answer": 16.39, "tol": 0.05, "feedback": "You left out E(H)."},
                {"when": "value > 100", "feedback": "..."}   # a condition; `value` is the test's value
+                                                            # (and `answer` the key's answer)
              ]},
             {"assert": "len(E_h2p) == len(R_grid)",          # a condition that must be True
              "hint": "...", "wrong": [{"when": "...", "feedback": "..."}]}
@@ -334,7 +335,7 @@ class Checker:
         for w in test.get("wrong", []):
             try:
                 if "when" in w:
-                    hit = bool(eval(w["when"], dict(env, value=value)))
+                    hit = bool(eval(w["when"], dict(env, value=value, answer=test.get("answer"))))
                 else:
                     hit = _close(value, w["answer"], w.get("tol"), w.get("rtol", None if "tol" in w else 1e-3))
             except Exception:

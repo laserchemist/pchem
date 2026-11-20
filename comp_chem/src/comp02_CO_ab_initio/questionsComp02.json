@@ -1,0 +1,32 @@
+[
+ {"question": "What does Hartree–Fock leave out?", "type": "multiple_choice", "answers": [
+   {"answer": "The instantaneous avoidance of electrons (electron correlation): each electron feels only the average field of the others", "correct": true, "feedback": "Right: the energy this misses is the correlation energy."},
+   {"answer": "Electron–nucleus attraction", "correct": false, "feedback": "Hartree–Fock includes it exactly."},
+   {"answer": "The Pauli principle", "correct": false, "feedback": "The Slater determinant builds in antisymmetry, so exchange is included exactly."},
+   {"answer": "Nuclear repulsion", "correct": false, "feedback": "That is a constant for fixed nuclei and is always included."}]},
+ {"question": "CCSD(T) costs about N⁷ for a basis of size N. Doubling the basis multiplies the cost by about", "type": "multiple_choice", "answers": [
+   {"answer": "128", "correct": true, "feedback": "2⁷ = 128. This is why CCSD(T) is limited to small molecules."},
+   {"answer": "7", "correct": false, "feedback": "The cost grows as a power: 2⁷, not 2 × 7 or 7."},
+   {"answer": "14", "correct": false, "feedback": "The cost grows as a power: 2⁷."},
+   {"answer": "2", "correct": false, "feedback": "That would be a linear-scaling method."}]},
+ {"question": "Compared with experiment, Hartree–Fock predicts a CO bond that is", "type": "multiple_choice", "answers": [
+   {"answer": "Too short and too stiff (ν̃e too high)", "correct": true, "feedback": "Right: without correlation, antibonding configurations are missing and the bond is overbound near r_e."},
+   {"answer": "Too long and too soft", "correct": false, "feedback": "Look at your table: HF r_e is about 1.105 Å, shorter than 1.128 Å."},
+   {"answer": "Exactly right", "correct": false, "feedback": "HF ν̃e is about 12 % too high."},
+   {"answer": "Too long but too stiff", "correct": false, "feedback": "Check your HF r_e against 1.128 Å."}]},
+ {"question": "What does the 'T' in cc-pVTZ stand for?", "type": "multiple_choice", "answers": [
+   {"answer": "Triple zeta: three sets of functions for each valence orbital", "correct": true, "feedback": "Right: D, T, Q = double, triple, quadruple zeta (X = 2, 3, 4)."},
+   {"answer": "The (T) triples correction", "correct": false, "feedback": "That is part of the method name CCSD(T), not the basis set."},
+   {"answer": "Temperature", "correct": false, "feedback": "Basis sets have nothing to do with temperature."},
+   {"answer": "Total", "correct": false, "feedback": "T is the number of functions per valence orbital: triple zeta."}]},
+ {"question": "The CO dipole moment is only 0.11 D, yet CO absorbs infrared light strongly at 2143 cm⁻¹. Why?", "type": "multiple_choice", "answers": [
+   {"answer": "IR intensity depends on (dμ/dr)², the change of the dipole as the bond vibrates, which is large for CO", "correct": true, "feedback": "Right: the gross selection rule needs a changing dipole, not a large one."},
+   {"answer": "Because the dipole is small, the molecule vibrates faster", "correct": false, "feedback": "The frequency is set by the force constant and reduced mass, not by μ."},
+   {"answer": "Triple bonds always absorb strongly", "correct": false, "feedback": "N₂ has a triple bond and does not absorb IR light at all."},
+   {"answer": "The dipole moment is large in the excited state", "correct": false, "feedback": "What matters is how μ changes with bond length."}]},
+ {"question": "CCSD(T)/cc-pVTZ gives ν̃e within 1 cm⁻¹ of experiment, while cc-pVDZ is 24 cm⁻¹ lower. What should you conclude?", "type": "multiple_choice", "answers": [
+   {"answer": "The result is still changing with the basis set, so part of the agreement is a lucky cancellation of errors", "correct": true, "feedback": "Right: agreement is not convergence. Check with cc-pVQZ."},
+   {"answer": "cc-pVTZ is exact for CO", "correct": false, "feedback": "No finite basis set is exact; the DZ → TZ change shows the result is still moving."},
+   {"answer": "Bigger basis sets are always worse", "correct": false, "feedback": "Bigger basis sets approach the complete-basis limit; whether that is closer to experiment depends on the other errors."},
+   {"answer": "The experiment must be wrong", "correct": false, "feedback": "The CO vibrational constants are known extremely precisely."}]}
+]

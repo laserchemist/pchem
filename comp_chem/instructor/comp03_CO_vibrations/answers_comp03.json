@@ -1,0 +1,250 @@
+{
+  "lab": "comp03",
+  "about": "Answer key for Computational Lab 3 (pchem_check.py). Reference values: instructor run on the CCSD(T)/cc-pVTZ curve. Edit this plain copy in src/; the build tool encodes the students' copy.",
+  "common_mistakes": [
+    {
+      "factor": 8065.544,
+      "feedback": "Off by a factor of 8065.5: an eV ↔ cm⁻¹ conversion is missing, or used twice. Multiply energies in eV by <code>EV_TO_CM1</code> once."
+    },
+    {
+      "factor": 1000,
+      "feedback": "Off by a factor of 1000: check the unit prefix."
+    }
+  ],
+  "questions": {
+    "1.1": {
+      "title": "Finite-difference Hamiltonian",
+      "needs": [
+        "vib_levels",
+        "E_harm",
+        "hw"
+      ],
+      "tests": [
+        {
+          "value": "E_harm[0] / hw",
+          "answer": 0.5,
+          "tol": 0.002,
+          "show_value": true,
+          "hint": "For a harmonic oscillator E₀/ħω must be 0.5. Check <code>t = HBAR**2 * lk.ACC / (2 * mu * h**2)</code> and <code>H = np.diag(V(r) + 2 * t) - t * np.eye(n, k=1) - t * np.eye(n, k=-1)</code>.",
+          "wrong": [
+            {
+              "when": "value < 0",
+              "feedback": "Negative energies: the diagonal needs <b>V(r) + 2t</b>, not just V(r). The kinetic energy contributes +2t to each diagonal element."
+            },
+            {
+              "when": "abs(value / 0.5 - np.sqrt(lk.ACC)) < 0.02 * np.sqrt(lk.ACC)",
+              "feedback": "About 10× too small: <code>lk.ACC</code> is missing from <code>t</code>. It converts ħ²/(μh²) from eV²·fs²/(amu·Å²) to eV."
+            },
+            {
+              "when": "abs(value / 0.5 - np.sqrt(2)) < 0.01",
+              "feedback": "√2 too large: t = ħ²/(<b>2</b>μh²). The factor 2 in the denominator is missing."
+            },
+            {
+              "when": "abs(value / 0.5 - 1 / np.sqrt(2)) < 0.01",
+              "feedback": "√2 too small: t = ħ²/(2μh²) has one factor 2, and the diagonal is V + 2t."
+            }
+          ]
+        },
+        {
+          "value": "E_harm[3] / hw",
+          "answer": 3.5,
+          "tol": 0.005,
+          "hint": "The levels must be evenly spaced, E_v/ħω = v + ½. Check the off-diagonal elements: −t just above and just below the diagonal (<code>k=1</code> and <code>k=-1</code>).",
+          "wrong": [
+            {
+              "when": "abs(value - E_harm[0] / hw) < 1e-6",
+              "feedback": "Level 3 equals level 0: the off-diagonal terms seem to be missing, so the matrix has no kinetic coupling between neighbouring points."
+            }
+          ]
+        }
+      ],
+      "ok": "The method reproduces E_v = ħω(v + ½): now you can trust it on a potential with no exact answer."
+    },
+    "1.2": {
+      "title": "CO levels and zero-point energy",
+      "needs": [
+        "wn",
+        "zpe",
+        "E"
+      ],
+      "tests": [
+        {
+          "value": "wn[1]",
+          "answer": 2145.421579,
+          "tol": 0.5,
+          "hint": "<code>wn = (E - E[0]) * EV_TO_CM1</code>: energies above the ground state, in cm⁻¹. <code>wn[1]</code> is the fundamental, close to 2143 cm⁻¹.",
+          "wrong": [
+            {
+              "when": "abs(value - E[1] * EV_TO_CM1) < 1e-6",
+              "feedback": "That is E₁ measured from the bottom of the well. Subtract the ground state: <code>(E - E[0]) * EV_TO_CM1</code>."
+            }
+          ]
+        },
+        {
+          "value": "zpe",
+          "answer": 1082.67733,
+          "tol": 0.5,
+          "hint": "<code>zpe = (E[0] - V_min) * EV_TO_CM1</code>: about half a vibrational quantum, measured from the bottom of the potential.",
+          "wrong": [
+            {
+              "when": "abs(value) < 1e-6",
+              "feedback": "Zero: you subtracted E[0] from itself. The zero-point energy is measured from the bottom of the potential, <code>V_min</code>."
+            },
+            {
+              "when": "abs(value - (E[0] - V_pts.min()) * EV_TO_CM1) < 0.01 and abs(value - answer) > 1",
+              "feedback": "Close: you measured from the lowest <i>computed</i> point, <code>V_pts.min()</code>. Use <code>V_min</code>, the true bottom of the spline curve, which falls between two computed points."
+            }
+          ]
+        }
+      ],
+      "ok": "Even at 0 K the molecule keeps half a quantum of vibration: the zero-point energy."
+    },
+    "2.1d": {
+      "title": "Discussion: wavefunctions",
+      "open": "Question 2.1 Discussion",
+      "min_chars": 60
+    },
+    "3.1": {
+      "title": "ω_e and ω_e x_e",
+      "needs": [
+        "we",
+        "wexe"
+      ],
+      "tests": [
+        {
+          "value": "we",
+          "answer": 2171.359374,
+          "tol": 0.5,
+          "hint": "In G(v) = ω_e(v+½) − ω_e x_e(v+½)², ω_e multiplies the first power: <code>we = c1</code>.",
+          "wrong": [
+            {
+              "when": "abs(value) < 100",
+              "feedback": "That is the x² coefficient. ω_e is the coefficient of x = v + ½: <code>we = c1</code>."
+            },
+            {
+              "when": "value > 5000",
+              "feedback": "That is the constant term c0. ω_e is the coefficient of x = v + ½: <code>we = c1</code>."
+            }
+          ]
+        },
+        {
+          "value": "wexe",
+          "answer": 12.98769832,
+          "tol": 0.05,
+          "hint": "The x² coefficient is −ω_e x_e, so <code>wexe = -c2</code> (a positive number, about 13 cm⁻¹).",
+          "wrong": [
+            {
+              "when": "value > 1000",
+              "feedback": "That is ω_e. ω_e x_e comes from the x² coefficient: <code>wexe = -c2</code>."
+            }
+          ]
+        },
+        {
+          "assert": "abs((we - 2 * wexe) - wn[1]) < 3",
+          "hint": "ω_e − 2ω_e x_e should reproduce your fundamental within a couple of cm⁻¹."
+        }
+      ],
+      "ok": "The levels close up by 2ω_e x_e per quantum: anharmonicity in one number."
+    },
+    "4.1": {
+      "title": "Transition dipoles",
+      "needs": [
+        "M",
+        "ratio_21"
+      ],
+      "tests": [
+        {
+          "value": "abs(M[1])",
+          "answer": 0.1178397386,
+          "rtol": 0.001,
+          "hint": "<code>M[v] = np.sum(psi[:, 0] * mu_of_r(r) * psi[:, v]) * h</code>: the integral as a sum, times the grid spacing.",
+          "wrong": [
+            {
+              "when": "abs(value * h / answer - 1) < 0.01",
+              "feedback": "Too large by 1/h: an integral as a sum needs the grid spacing, <code>* h</code>."
+            },
+            {
+              "when": "abs(value - abs(np.sum(psi[:, 0] * mu_of_r(r) * psi[:, 0]) * h)) < 1e-9",
+              "feedback": "That is ⟨0|μ|0⟩, the average dipole in v = 0. Use <code>psi[:, v]</code> for the second wavefunction."
+            }
+          ]
+        },
+        {
+          "value": "ratio_21",
+          "answer": 0.002351335491,
+          "rtol": 0.02,
+          "hint": "<code>ratio_21 = M[2]**2 / M[1]**2</code>: intensities go as the <b>square</b> of the transition dipole.",
+          "wrong": [
+            {
+              "when": "abs(value**2 / answer - 1) < 0.05",
+              "feedback": "Square the transition dipoles: intensity ∝ |⟨0|μ|v⟩|², so <code>M[2]**2 / M[1]**2</code>."
+            },
+            {
+              "when": "abs(1 / value / answer - 1) < 0.05",
+              "feedback": "Upside down: the overtone (v = 2) goes on top, <code>M[2]**2 / M[1]**2</code>."
+            }
+          ]
+        }
+      ],
+      "ok": "The overtone is weaker by two to three orders of magnitude: allowed only through anharmonicity."
+    },
+    "4.2d": {
+      "title": "Discussion: overtone intensity",
+      "open": "Question 4.2 Discussion",
+      "min_chars": 60
+    },
+    "5.1": {
+      "title": "Isotope shift",
+      "needs": [
+        "mu13",
+        "f13"
+      ],
+      "tests": [
+        {
+          "value": "mu13",
+          "answer": 7.172412628,
+          "tol": 1e-05,
+          "hint": "Reduced mass μ = m₁m₂/(m₁ + m₂), with m(¹³C) = 13.003355 amu and <code>m_O</code>.",
+          "wrong": [
+            {
+              "when": "abs(value - 13.003355) < 1e-3",
+              "feedback": "That is the mass of ¹³C alone. The vibration depends on the <b>reduced mass</b>, m₁m₂/(m₁ + m₂)."
+            },
+            {
+              "when": "abs(value - (13.003355 + m_O)) < 1e-3",
+              "feedback": "That is the total mass. The vibration depends on the <b>reduced mass</b>, m₁m₂/(m₁ + m₂)."
+            }
+          ]
+        },
+        {
+          "value": "f13",
+          "answer": 2098.158088,
+          "tol": 0.3,
+          "hint": "<code>f13 = (E13[1] - E13[0]) * EV_TO_CM1</code>, about 47 cm⁻¹ below ¹²C¹⁶O.",
+          "wrong": [
+            {
+              "when": "abs(value - wn[1]) < 0.01",
+              "feedback": "That is the ¹²C¹⁶O fundamental. Use the levels <code>E13</code> from the ¹³C¹⁶O reduced mass."
+            }
+          ]
+        }
+      ],
+      "ok": "Same potential, heavier mass, lower frequency: the Born–Oppenheimer approximation at work."
+    },
+    "abstract": {
+      "title": "Abstract",
+      "open": "Your abstract goes in the cell below",
+      "min_chars": 400
+    },
+    "6c": {
+      "title": "Conclusions",
+      "open": "Question 6. Conclusions",
+      "min_chars": 300
+    },
+    "7d": {
+      "title": "Reflection",
+      "open": "**Question 7.**",
+      "min_chars": 60
+    }
+  }
+}

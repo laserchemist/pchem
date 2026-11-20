@@ -27,7 +27,8 @@ Course-style labs (the CHEM 3376 format, with auto-checks) also use:
 
 A lab named src/comp01_H2_O2.py is written to comp01_H2_O2/comp01_H2_O2.ipynb (students) and
 instructor/comp01_H2_O2/ (solutions), each with a copy of the assets in src/comp01_H2_O2/
-(the checker pchem_check.py, the answer key answers_<lab>.json, quiz .json files, data). The answer key
+(the answer key answers_<lab>.json, quiz .json files, data) and of the one master checker,
+src/_shared/pchem_check.py. The answer key
 is encoded in the students' folder and left plain in the instructor's. Each lab folder holds exactly one notebook, because
 the course's init.py finds "the" notebook as the newest .ipynb in the folder.
 
@@ -204,8 +205,9 @@ def main():
                 if os.path.isdir(assets):
                     shutil.copytree(assets, out_dir, dirs_exist_ok=True,
                                     ignore=shutil.ignore_patterns("__pycache__", ".ipynb_checkpoints"))
-                    if student:                       # students get the answer key encoded; instructors keep it plain
-                        encode_answer_keys(out_dir)
+                shutil.copy(os.path.join(ROOT, "src", "_shared", "pchem_check.py"), out_dir)   # one master checker
+                if student:                           # students get the answer key encoded; instructors keep it plain
+                    encode_answer_keys(out_dir)
                 out = os.path.join(out_dir, name + ".ipynb")
                 nbformat.write(nb, out)
                 if a.execute and not student:

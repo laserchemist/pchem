@@ -1,0 +1,32 @@
+[
+ {"question": "Why is the total force on an isolated molecule always zero?", "type": "multiple_choice", "answers": [
+   {"answer": "The energy doesn't change when the whole molecule is translated, so the forces on the atoms sum to zero (Newton's third law; momentum is conserved)", "correct": true, "feedback": "Right."},
+   {"answer": "Because the molecule is at its minimum", "correct": false, "feedback": "The total force is zero at any geometry, not only at the minimum."},
+   {"answer": "The finite-difference method cancels it", "correct": false, "feedback": "It is a law of physics; a good force method respects it."},
+   {"answer": "Because CO₂ has no dipole", "correct": false, "feedback": "Dipoles have nothing to do with it."}]},
+ {"question": "Velocity Verlet with Δt = 4 fs blows up for CO₂, but Δt = 0.5 fs conserves energy well. Why?", "type": "multiple_choice", "answers": [
+   {"answer": "The step must be small compared with the fastest vibrational period (13.5 fs for ν₃); at 4 fs the force changes a lot within one step", "correct": true, "feedback": "Right: rule of thumb, Δt ≲ period/10–20."},
+   {"answer": "4 fs is longer than the trajectory", "correct": false, "feedback": "The trajectory is 1000 fs."},
+   {"answer": "Large steps make the molecule rotate", "correct": false, "feedback": "Rotation is real physics, not an artefact."},
+   {"answer": "The GP surface is only valid for small time steps", "correct": false, "feedback": "The surface doesn't know about time; the integrator does."}]},
+ {"question": "How is the IR spectrum obtained from a molecular dynamics trajectory?", "type": "multiple_choice", "answers": [
+   {"answer": "From the Fourier transform of the dipole moment μ(t) along the trajectory (|μ̂(ω)|², times ω² for the absorption line shape)", "correct": true, "feedback": "Right: a molecule absorbs at the frequencies at which its dipole oscillates."},
+   {"answer": "From the Fourier transform of the energy", "correct": false, "feedback": "The total energy is constant; the dipole carries the coupling to light."},
+   {"answer": "By diagonalising the Hessian at each step", "correct": false, "feedback": "That is the harmonic method of Lab 4."},
+   {"answer": "From the bond lengths only", "correct": false, "feedback": "Bond motion without a changing dipole (the symmetric stretch) gives no absorption."}]},
+ {"question": "The symmetric stretch is missing from the MD spectrum, even though MD is not harmonic. Why?", "type": "multiple_choice", "answers": [
+   {"answer": "The selection rule comes from symmetry: the symmetric stretch keeps the inversion centre at any amplitude, so the dipole never changes", "correct": true, "feedback": "Right."},
+   {"answer": "The symmetric stretch is not excited at 300 K", "correct": false, "feedback": "It is excited (look at r₁ and r₂); it just doesn't change the dipole."},
+   {"answer": "The trajectory was too short", "correct": false, "feedback": "10 ps covers hundreds of symmetric-stretch periods."},
+   {"answer": "The window function removed it", "correct": false, "feedback": "The Hann window only smooths the ends of the record."}]},
+ {"question": "Averaging many 300 K trajectories turns the ν₃ band into two maxima about 20–25 cm⁻¹ apart. What are they?", "type": "multiple_choice", "answers": [
+   {"answer": "The P and R branches: rotation adds to or subtracts from the vibrational frequency, with a thermal distribution of rotational speeds", "correct": true, "feedback": "Right; their separation grows as √T."},
+   {"answer": "The two degenerate bends", "correct": false, "feedback": "The bends are near 667 cm⁻¹, not in the ν₃ band."},
+   {"answer": "Fermi resonance", "correct": false, "feedback": "Fermi resonance couples ν₁ and 2ν₂ near 1300 cm⁻¹."},
+   {"answer": "Numerical noise", "correct": false, "feedback": "The two-branch contour is the classical picture of a real gas-phase band."}]},
+ {"question": "What is the main thing classical MD cannot describe, compared with a quantum calculation?", "type": "multiple_choice", "answers": [
+   {"answer": "Zero-point energy and quantised levels: at low temperature classical MD gives near-harmonic frequencies, not the quantum fundamentals", "correct": true, "feedback": "Right: compare with Lab 3, where the quantum levels on a grid include the zero-point energy."},
+   {"answer": "Anharmonicity", "correct": false, "feedback": "MD includes the full anharmonic surface."},
+   {"answer": "Rotation", "correct": false, "feedback": "MD includes rotation (classically)."},
+   {"answer": "Mode coupling", "correct": false, "feedback": "MD includes all couplings present in the surface."}]}
+]

@@ -1,0 +1,306 @@
+{
+  "lab": "comp02",
+  "about": "Answer key for Computational Lab 2 (pchem_check.py). Reference values: PySCF 2.x, instructor run. Edit this plain copy in src/; the build tool encodes the students' copy.",
+  "common_mistakes": [
+    {
+      "factor": 27.211386,
+      "feedback": "Off by a factor of 27.2: a hartree ↔ eV conversion is missing, or used twice."
+    },
+    {
+      "factor": 6.283185307,
+      "feedback": "Off by a factor of 2π: ν̃ = ω/(2πc). Check where 2π belongs."
+    },
+    {
+      "factor": 1000,
+      "feedback": "Off by a factor of 1000: check the unit prefix."
+    }
+  ],
+  "questions": {
+    "1.1": {
+      "title": "Energies up the ladder",
+      "needs": [
+        "co_energy"
+      ],
+      "tests": [
+        {
+          "value": "co_energy(1.128, 'hf', 'sto-3g')",
+          "answer": -3026.5744267057817,
+          "tol": 0.001,
+          "hint": "The Hartree–Fock branch was given: check you haven't changed it, and that the function still ends with <code>return e * HARTREE_TO_EV</code>."
+        },
+        {
+          "value": "co_energy(1.128, 'mp2', 'sto-3g')",
+          "answer": -3030.071699826103,
+          "tol": 0.001,
+          "hint": "The MP2 energy is <code>mp.MP2(mf).run().e_tot</code> (hartree).",
+          "wrong": [
+            {
+              "when": "abs(value - co_energy(1.128, 'hf', 'sto-3g')) < 1e-6",
+              "feedback": "Your MP2 energy equals the Hartree–Fock energy. In the <code>elif method == \"mp2\":</code> branch use <code>e = mp.MP2(mf).run().e_tot</code>."
+            },
+            {
+              "when": "abs(value - co_energy(1.128, 'hf', 'sto-3g')) < 30",
+              "feedback": "That is just the MP2 <i>correlation</i> energy, or close to it. <code>.e_tot</code> is the <b>total</b> energy, which is what the function should return."
+            }
+          ]
+        },
+        {
+          "value": "co_energy(1.128, 'ccsd(t)', 'sto-3g')",
+          "answer": -3030.327245954591,
+          "tol": 0.001,
+          "hint": "CCSD(T) is the CCSD energy plus the triples correction: <code>e = e + mycc.ccsd_t()</code>.",
+          "wrong": [
+            {
+              "when": "abs(value - co_energy(1.128, 'ccsd', 'sto-3g')) < 1e-6",
+              "feedback": "This is the CCSD energy: the (T) correction is missing. Add <code>e = e + mycc.ccsd_t()</code>."
+            },
+            {
+              "when": "abs(value - answer) > 1000",
+              "feedback": "Far too large: <code>mycc.ccsd_t()</code> is a small <b>correction</b> (hartree) to add to the CCSD energy, not a total energy. Add it before the conversion to eV."
+            }
+          ]
+        }
+      ],
+      "ok": "Four rungs of the ladder in one function. Each starts from the same Hartree–Fock orbitals."
+    },
+    "1.2": {
+      "title": "Correlation energies",
+      "needs": [
+        "E_corr",
+        "E"
+      ],
+      "tests": [
+        {
+          "value": "E_corr['hf']",
+          "answer": 0.0,
+          "tol": 1e-09,
+          "hint": "The correlation energy of Hartree–Fock itself is zero by definition: <code>E_corr[m] = E[m] - E[\"hf\"]</code>."
+        },
+        {
+          "value": "E_corr['ccsd(t)']",
+          "answer": -8.40142,
+          "tol": 0.01,
+          "hint": "<code>E_corr[m] = E[m] - E[\"hf\"]</code>: a few eV, and negative.",
+          "wrong": [
+            {
+              "when": "abs(value - E['ccsd(t)']) < 1e-6",
+              "feedback": "That is the total CCSD(T) energy. Subtract the Hartree–Fock energy: <code>E[m] - E[\"hf\"]</code>."
+            }
+          ]
+        },
+        {
+          "value": "E_corr['mp2']",
+          "answer": -7.91247,
+          "tol": 0.01,
+          "hint": "<code>E_corr[m] = E[m] - E[\"hf\"]</code>."
+        }
+      ],
+      "ok": "A few eV out of 3000: small on the scale of the total energy, but as large as the chemistry."
+    },
+    "1.3d": {
+      "title": "Discussion: correlation energy",
+      "open": "Question 1.3 Discussion",
+      "min_chars": 60
+    },
+    "2.1": {
+      "title": "Bond length, force constant and wavenumber from a curve",
+      "needs": [
+        "fit_minimum",
+        "mu_CO"
+      ],
+      "setup": "rt = np.linspace(1.08, 1.18, 7)\nfm = fit_minimum(rt, 0.5 * 120 * (rt - 1.13)**2, mu_CO)",
+      "tests": [
+        {
+          "value": "fm[0]",
+          "answer": 1.13,
+          "tol": 0.0001,
+          "hint": "The minimum of the test curve is at 1.13 Å. The minimum-finding lines were given: check you haven't changed them."
+        },
+        {
+          "value": "fm[1]",
+          "answer": 120.0,
+          "tol": 0.01,
+          "hint": "<code>k = np.polyval(np.polyder(p, 2), x)</code>: the second derivative evaluated at the minimum.",
+          "wrong": [
+            {
+              "answer": 60.0,
+              "tol": 0.01,
+              "feedback": "60 is the coefficient of x², which is k/2. Take the <b>second derivative</b>: <code>np.polyval(np.polyder(p, 2), x)</code>."
+            },
+            {
+              "when": "abs(value) < 1e-3",
+              "feedback": "Zero: that is the first derivative at the minimum. You need the <b>second</b> derivative, <code>np.polyder(p, 2)</code>."
+            }
+          ]
+        },
+        {
+          "value": "fm[2]",
+          "answer": 2181.62,
+          "tol": 0.5,
+          "hint": "<code>wn = np.sqrt(k / mu_amu * lk.ACC) / (2 * np.pi * lk.C_CM_PER_FS)</code>.",
+          "wrong": [
+            {
+              "when": "abs(value / answer - 1 / np.sqrt(lk.ACC)) < 0.02 * abs(1 / np.sqrt(lk.ACC))",
+              "feedback": "Off by a factor of 10.2 = 1/√ACC: with k in eV/Å² and μ in amu, ω (rad/fs) = <code>np.sqrt(k / mu_amu * lk.ACC)</code>."
+            },
+            {
+              "when": "abs(value / answer - 1 / np.sqrt(mu_CO)) < 0.01 or abs(value / answer - np.sqrt(mu_CO)) < 0.01",
+              "feedback": "Check the mass: it is k divided by the <b>reduced mass</b> μ, inside the square root."
+            }
+          ]
+        }
+      ],
+      "ok": "The same recipe as Lab 1, now reusable for any curve."
+    },
+    "2.2": {
+      "title": "Curves by method (cc-pVTZ)",
+      "needs": [
+        "results"
+      ],
+      "tests": [
+        {
+          "assert": "all(m in results for m in ('hf', 'mp2', 'ccsd(t)'))",
+          "hint": "<code>results</code> should have an entry for each method: <code>results[m] = fit_minimum(r_pts, E_curve, mu_CO)</code>."
+        },
+        {
+          "value": "results['ccsd(t)'][0]",
+          "answer": 1.13246,
+          "tol": 0.002,
+          "hint": "CCSD(T)/cc-pVTZ r_e should be within a few thousandths of an Å of experiment (1.1283 Å). Use <code>co_energy(r, m, \"cc-pvtz\")</code> for every <code>r</code> in <code>r_pts</code>.",
+          "wrong": [
+            {
+              "when": "abs(value - answer) > 0.005 and abs(value - answer) < 0.03",
+              "feedback": "Close, but not the cc-pVTZ value. Did you pass <code>\"cc-pvtz\"</code> to <code>co_energy</code>? The default basis is cc-pVDZ."
+            }
+          ]
+        },
+        {
+          "value": "results['ccsd(t)'][2]",
+          "answer": 2171.43,
+          "tol": 5,
+          "hint": "CCSD(T)/cc-pVTZ ν̃e is close to the experimental 2170 cm⁻¹."
+        },
+        {
+          "value": "results['hf'][2]",
+          "answer": 2425.33,
+          "tol": 5,
+          "hint": "Hartree–Fock ν̃e is well above experiment."
+        },
+        {
+          "value": "results['mp2'][2]",
+          "answer": 2138.43,
+          "tol": 5,
+          "hint": "Each method's curve must use that method: <code>co_energy(r, m, \"cc-pvtz\")</code>, with <code>m</code> from the loop.",
+          "wrong": [
+            {
+              "when": "abs(value - results['hf'][2]) < 1",
+              "feedback": "Your MP2 result equals Hartree–Fock: inside the loop, pass <code>m</code> (not \"hf\") to <code>co_energy</code>."
+            }
+          ]
+        }
+      ],
+      "ok": "HF too short and too stiff, MP2 overshoots, CCSD(T) closest: the classic pattern."
+    },
+    "2.3d": {
+      "title": "Discussion: correlation and the bond",
+      "open": "Question 2.3 Discussion",
+      "min_chars": 60
+    },
+    "3.1": {
+      "title": "Basis-set convergence",
+      "needs": [
+        "conv",
+        "E_dz"
+      ],
+      "tests": [
+        {
+          "value": "conv['cc-pvdz'][2]",
+          "answer": 2146.24,
+          "tol": 5,
+          "hint": "<code>E_dz = np.array([co_energy(r, \"ccsd(t)\", \"cc-pvdz\") for r in r_pts])</code>.",
+          "wrong": [
+            {
+              "when": "abs(value - results['ccsd(t)'][2]) < 1",
+              "feedback": "This is the cc-pVTZ result again. Use <code>\"cc-pvdz\"</code>."
+            },
+            {
+              "when": "abs(value - results['hf'][2]) < 300 and value > answer + 100",
+              "feedback": "That looks like a Hartree–Fock frequency. Use the method <code>\"ccsd(t)\"</code>."
+            }
+          ]
+        },
+        {
+          "value": "conv['cc-pvdz'][0]",
+          "answer": 1.14413,
+          "tol": 0.002,
+          "hint": "CCSD(T)/cc-pVDZ r_e is a little longer than cc-pVTZ."
+        }
+      ],
+      "ok": "A bigger basis shortens and stiffens the bond: the result is still moving."
+    },
+    "3.2d": {
+      "title": "Discussion: agreement vs convergence",
+      "open": "Question 3.2 Discussion",
+      "min_chars": 60
+    },
+    "4.2": {
+      "title": "Dipole derivative",
+      "needs": [
+        "dmu_dr",
+        "mu_plus",
+        "mu_minus"
+      ],
+      "tests": [
+        {
+          "value": "mu_plus",
+          "answer": 0.00679422,
+          "tol": 0.005,
+          "hint": "<code>mu_plus = co_dipole(1.16)</code> (B3LYP is the default method)."
+        },
+        {
+          "value": "mu_minus",
+          "answer": 0.215924,
+          "tol": 0.005,
+          "hint": "<code>mu_minus = co_dipole(1.10)</code>."
+        },
+        {
+          "value": "dmu_dr",
+          "answer": -3.4855,
+          "tol": 0.03,
+          "hint": "<code>dmu_dr = (mu_plus - mu_minus) / (1.16 - 1.10)</code>, in D/Å.",
+          "wrong": [
+            {
+              "when": "abs(value / answer - 0.06) < 0.003",
+              "feedback": "You have the difference μ(1.16) − μ(1.10) but haven't divided by the step, 1.16 − 1.10 = 0.06 Å."
+            },
+            {
+              "when": "abs(value / answer - 2) < 0.05",
+              "feedback": "Twice too large: divide by the full distance between the two points, 0.06 Å, not 0.03 Å."
+            }
+          ]
+        }
+      ],
+      "ok": "The dipole changes by several debye per ångström: that is what makes the CO stretch absorb."
+    },
+    "4.3d": {
+      "title": "Discussion: dipole and IR intensity",
+      "open": "Question 4.3 Discussion",
+      "min_chars": 60
+    },
+    "abstract": {
+      "title": "Abstract",
+      "open": "Your abstract goes in the cell below",
+      "min_chars": 400
+    },
+    "6c": {
+      "title": "Conclusions",
+      "open": "Question 6. Conclusions",
+      "min_chars": 300
+    },
+    "7d": {
+      "title": "Reflection",
+      "open": "**Question 7.**",
+      "min_chars": 60
+    }
+  }
+}

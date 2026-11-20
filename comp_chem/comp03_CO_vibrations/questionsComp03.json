@@ -1,0 +1,27 @@
+[
+ {"question": "In the finite-difference method, what are the eigenvalues of the Hamiltonian matrix?", "type": "multiple_choice", "answers": [
+   {"answer": "The vibrational energy levels E_v", "correct": true, "feedback": "Right; the eigenvectors are the wavefunctions on the grid."},
+   {"answer": "The bond lengths", "correct": false, "feedback": "The bond lengths are the grid points r_i."},
+   {"answer": "The transition dipoles", "correct": false, "feedback": "Those are integrals computed from the eigenvectors."},
+   {"answer": "The force constants", "correct": false, "feedback": "The force constant is the curvature of V(r), an input."}]},
+ {"question": "Why does a molecule have vibrational energy even at 0 K?", "type": "multiple_choice", "answers": [
+   {"answer": "Confining a quantum particle in a well costs kinetic energy: the lowest level is half a quantum above the minimum (zero-point energy)", "correct": true, "feedback": "Right: E₀ ≈ ½ħω, about 1080 cm⁻¹ for CO."},
+   {"answer": "Molecules are never at 0 K", "correct": false, "feedback": "The zero-point energy remains even at absolute zero."},
+   {"answer": "The bond is always stretched", "correct": false, "feedback": "The v = 0 wavefunction is centred near r_e."},
+   {"answer": "Rotation provides it", "correct": false, "feedback": "Rotation is separate; J = 0 has no rotational energy."}]},
+ {"question": "For CO, the fundamental (2143 cm⁻¹) is lower than ω_e (2170 cm⁻¹) because", "type": "multiple_choice", "answers": [
+   {"answer": "The potential is anharmonic: it gets softer as the bond stretches, so the levels close up, and ν̃₀→₁ = ω_e − 2ω_e x_e", "correct": true, "feedback": "Right."},
+   {"answer": "The zero-point energy is subtracted", "correct": false, "feedback": "Both levels have their own energy; their difference is what is measured."},
+   {"answer": "Isotopes lower the frequency", "correct": false, "feedback": "The isotope shift is a separate effect (−47 cm⁻¹ for ¹³C)."},
+   {"answer": "The experiment is done at room temperature", "correct": false, "feedback": "The fundamental is a property of the levels, not of the temperature."}]},
+ {"question": "Why is the 0 → 2 overtone of CO about 100 times weaker than the fundamental?", "type": "multiple_choice", "answers": [
+   {"answer": "Δv = ±1 is strict for a harmonic oscillator with a linear dipole; overtones appear only through anharmonicity of V(r) and curvature of μ(r), both small", "correct": true, "feedback": "Right."},
+   {"answer": "The overtone is forbidden by symmetry", "correct": false, "feedback": "It is weakly allowed, and it is observed."},
+   {"answer": "There are fewer molecules in v = 2", "correct": false, "feedback": "Both bands start from v = 0."},
+   {"answer": "Higher frequencies are always weaker", "correct": false, "feedback": "The ν̃ factor makes higher-frequency bands slightly stronger, not weaker."}]},
+ {"question": "Replacing ¹²C by ¹³C in CO changes", "type": "multiple_choice", "answers": [
+   {"answer": "The reduced mass only; the potential energy curve is the same (Born–Oppenheimer)", "correct": true, "feedback": "Right: the shift is about −47 cm⁻¹."},
+   {"answer": "The potential energy curve only", "correct": false, "feedback": "The electrons don't feel the nuclear mass in the Born–Oppenheimer approximation."},
+   {"answer": "Both the potential and the reduced mass", "correct": false, "feedback": "To within the Born–Oppenheimer approximation the potential is unchanged."},
+   {"answer": "Nothing", "correct": false, "feedback": "The vibrational frequency drops by 2.2 %."}]}
+]

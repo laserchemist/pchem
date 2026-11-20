@@ -1,0 +1,22 @@
+[
+ {"question": "Which of these molecules has a vibration that is IR-inactive?", "type": "multiple_choice", "answers": [
+   {"answer": "CS₂: like CO₂, its symmetric stretch keeps the inversion centre", "correct": true, "feedback": "Right: ν₁ of CS₂ (658 cm⁻¹) is seen only in the Raman spectrum."},
+   {"answer": "N₂O", "correct": false, "feedback": "N₂O has no inversion centre, so all its modes are IR-active."},
+   {"answer": "H₂O", "correct": false, "feedback": "All three modes of water are IR-active."},
+   {"answer": "OCS", "correct": false, "feedback": "OCS has no inversion centre: all modes are IR-active."}]},
+ {"question": "Why does HCN need a 0.25 fs time step when CO₂ is fine with 0.5 fs?", "type": "multiple_choice", "answers": [
+   {"answer": "The C–H stretch (3311 cm⁻¹, period about 10 fs) is faster than any CO₂ vibration, so the step must be smaller to resolve it", "correct": true, "feedback": "Right: the light hydrogen atom vibrates fast."},
+   {"answer": "HCN has more electrons", "correct": false, "feedback": "The electrons only enter through the surface; the time step depends on the nuclear motion."},
+   {"answer": "HCN is bent", "correct": false, "feedback": "HCN is linear."},
+   {"answer": "The ML surface is less accurate for HCN", "correct": false, "feedback": "The time step is set by the fastest vibration, not by the surface's accuracy."}]},
+ {"question": "When should the training set include copies with r₁ and r₂ swapped?", "type": "multiple_choice", "answers": [
+   {"answer": "Only when the two outer atoms are identical (CS₂, H₂O, SO₂), because only then is the energy unchanged by the swap", "correct": true, "feedback": "Right: for N₂O, swapping gives a different molecule (ONN)."},
+   {"answer": "Always", "correct": false, "feedback": "For N₂O, OCS and HCN the swap gives a different arrangement with a different energy."},
+   {"answer": "Never", "correct": false, "feedback": "For identical outer atoms it builds in a real symmetry."},
+   {"answer": "Only for bent molecules", "correct": false, "feedback": "The symmetry depends on which atoms are at the ends, not on the shape."}]},
+ {"question": "Classical MD at 300 K gives band positions close to the harmonic ones, not the observed fundamentals. Why?", "type": "multiple_choice", "answers": [
+   {"answer": "Classical MD has no zero-point energy, so at low temperature the molecule stays near the bottom of the well, where the surface is nearly harmonic", "correct": true, "feedback": "Right: compare Lab 3, where the quantum levels sample the anharmonic surface even at v = 0."},
+   {"answer": "The MD time step is too large", "correct": false, "feedback": "A suitable step conserves energy; it doesn't shift the bands."},
+   {"answer": "The GP surface is harmonic", "correct": false, "feedback": "The GP learns the full anharmonic DFT surface."},
+   {"answer": "MD can't include rotation", "correct": false, "feedback": "It does; that is where the P and R branches come from."}]}
+]

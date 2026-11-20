@@ -1,0 +1,241 @@
+{
+  "lab": "comp06",
+  "about": "Answer key for Computational Lab 6 (pchem_check.py). Reference values: instructor run on the Lab 5 surface. Edit this plain copy in src/; the build tool encodes the students' copy.",
+  "common_mistakes": [
+    {
+      "factor": 1000,
+      "feedback": "Off by a factor of 1000: check the unit prefix (eV or meV)."
+    }
+  ],
+  "questions": {
+    "1.1": {
+      "title": "Forces from the surface",
+      "needs": [
+        "forces",
+        "energy",
+        "Xt"
+      ],
+      "setup": "_F = forces(Xt)\n_x = Xt.ravel()\n_ref = np.zeros(9)\nfor _k in range(9):\n    _p = _x.copy(); _p[_k] += 1e-3\n    _q = _x.copy(); _q[_k] -= 1e-3\n    _ref[_k] = -(energy(_p.reshape(3, 3)) - energy(_q.reshape(3, 3))) / 2e-3\n_ref = _ref.reshape(3, 3)",
+      "tests": [
+        {
+          "assert": "np.shape(_F) == (3, 3)",
+          "hint": "<code>forces</code> should return a 3 × 3 array: <code>.reshape(3, 3)</code> at the end."
+        },
+        {
+          "assert": "np.allclose(_F, _ref, atol=1e-4)",
+          "hint": "<code>return -((e[0::2] - e[1::2]) / (2 * h)).reshape(3, 3)</code>: minus the central difference.",
+          "wrong": [
+            {
+              "when": "np.allclose(_F, -_ref, atol=1e-4)",
+              "feedback": "Wrong sign: the force is <b>minus</b> the gradient. Downhill is the direction of the force."
+            },
+            {
+              "when": "np.allclose(_F, 2 * _ref, atol=2e-4)",
+              "feedback": "Twice too large: a central difference divides by the distance between the two points, <b>2h</b>."
+            },
+            {
+              "when": "np.allclose(_F, _ref / 2, atol=1e-4)",
+              "feedback": "Half the right size: divide by 2h, not 4h."
+            },
+            {
+              "when": "np.allclose(_F, -_ref, atol=1e-2) or np.allclose(_F, _ref, atol=1e-2)",
+              "feedback": "Close but not exact: use <code>e[0::2]</code> (the +h energies) minus <code>e[1::2]</code> (the −h energies), divided by <code>2 * h</code>."
+            }
+          ]
+        },
+        {
+          "assert": "np.abs(_F.sum(0)).max() < 1e-3 and np.abs(forces(X0)).max() < 0.01",
+          "hint": "The total force must be zero, and the forces at the minimum ≈ 0."
+        }
+      ],
+      "ok": "Forces that vanish at the minimum and sum to zero everywhere: momentum is conserved."
+    },
+    "2.1": {
+      "title": "Velocity Verlet",
+      "needs": [
+        "run_md",
+        "X_test",
+        "V_test"
+      ],
+      "setup": "_tr, _mu, _et = run_md(X_test, V_test, 0.5, 400)",
+      "tests": [
+        {
+          "assert": "np.ptp(_tr[:, 0, 2]) > 1e-3",
+          "hint": "The atoms should move: the drift step is <code>X += dt * V</code>.",
+          "wrong": [
+            {
+              "when": "np.ptp(_tr[:, 0, 2]) < 1e-9",
+              "feedback": "The atoms never move: the drift step <code>X += dt * V</code> is missing."
+            }
+          ]
+        },
+        {
+          "assert": "1000 * np.ptp(_et) < 1.0",
+          "hint": "The total energy should stay constant to well under 1 meV over 200 fs. Both half kicks are <code>V += 0.5 * dt * F / masses * lk.ACC</code>, with the drift <code>X += dt * V</code> between them.",
+          "wrong": [
+            {
+              "when": "1000 * np.ptp(_et) > 1.0",
+              "feedback": "The total energy isn't conserved. Check each line: <code>V += 0.5 * dt * F / masses * lk.ACC</code> (half a kick: the factor 0.5, divide by the masses, and <code>lk.ACC</code> for units), <code>X += dt * V</code>, then the second half kick with the <b>new</b> forces."
+            }
+          ]
+        }
+      ],
+      "ok": "Energy conserved to a fraction of a meV: the integrator works."
+    },
+    "3.1": {
+      "title": "Time-step error",
+      "needs": [
+        "slope",
+        "spread"
+      ],
+      "tests": [
+        {
+          "value": "slope",
+          "answer": 1.866478963,
+          "tol": 0.3,
+          "hint": "<code>slope = np.polyfit(np.log(dts[1:4]), np.log(spread[1:4]), 1)[0]</code>: log of the fluctuation against log of Δt.",
+          "wrong": [
+            {
+              "when": "abs(value * answer - 1) < 0.15",
+              "feedback": "Upside down: x is log(Δt) and y is log(fluctuation): <code>np.polyfit(np.log(dts[1:4]), np.log(spread[1:4]), 1)</code>."
+            },
+            {
+              "when": "abs(value) > 10",
+              "feedback": "Take the logarithms of both: on log–log axes a power law y ∝ Δtⁿ is a straight line of slope n."
+            }
+          ]
+        }
+      ],
+      "ok": "Error ∝ Δt²: velocity Verlet is a second-order method."
+    },
+    "3.2d": {
+      "title": "Discussion: the time step",
+      "open": "Question 3.2 Discussion",
+      "min_chars": 60
+    },
+    "4.1d": {
+      "title": "Discussion: the trajectory",
+      "open": "Question 4.1 Discussion",
+      "min_chars": 60
+    },
+    "5.1": {
+      "title": "IR spectrum from the dipole",
+      "needs": [
+        "ir_spectrum"
+      ],
+      "setup": "_t = np.arange(8192) * 0.5\n_m = np.zeros((8192, 3)); _m[:, 0] = np.sin(2 * np.pi * lk.C_CM_PER_FS * 1000 * _t)\n_nu, _I = ir_spectrum(_m, 0.5)\npeak = _nu[np.argmax(_I)]\n_m2 = np.zeros((8192, 3)); _m2[:, 0] = np.sin(2 * np.pi * lk.C_CM_PER_FS * 500 * _t) + np.sin(2 * np.pi * lk.C_CM_PER_FS * 1500 * _t)\n_nu2, _I2 = ir_spectrum(_m2, 0.5)\n_lo = (_nu2 > 400) & (_nu2 < 600); _hi = (_nu2 > 1400) & (_nu2 < 1600)\nratio = _I2[_hi].max() / _I2[_lo].max() if _lo.any() and _hi.any() else float('nan')",
+      "tests": [
+        {
+          "value": "peak",
+          "answer": 1000.0,
+          "tol": 1.5,
+          "hint": "A pure 1000 cm⁻¹ oscillation must give a peak at 1000 cm⁻¹. <code>nu = np.fft.rfftfreq(n, d=dt_fs) / lk.C_CM_PER_FS</code>.",
+          "wrong": [
+            {
+              "when": "value < 1",
+              "feedback": "These are frequencies in fs⁻¹, not wavenumbers. Convert: ν̃ = ν/c, so <b>divide</b> by <code>lk.C_CM_PER_FS</code>."
+            },
+            {
+              "when": "abs(value - 500) < 3",
+              "feedback": "Half the right value: tell <code>rfftfreq</code> the time step, <code>d=dt_fs</code>."
+            }
+          ]
+        },
+        {
+          "value": "ratio",
+          "answer": 9.0,
+          "rtol": 0.05,
+          "hint": "Two equal oscillations at 500 and 1500 cm⁻¹ should give peaks in the ratio (1500/500)² = 9: <code>return nu, S * nu**2</code>.",
+          "wrong": [
+            {
+              "when": "abs(value - 1) < 0.1",
+              "feedback": "The two peaks are equal: multiply the spectrum by ν̃², <code>return nu, S * nu**2</code>."
+            },
+            {
+              "when": "abs(value - 3) < 0.2",
+              "feedback": "The ratio is 3, not 9: multiply by ν̃<b>²</b>, not ν̃."
+            }
+          ]
+        }
+      ],
+      "ok": "Your Fourier transform puts the peak exactly where the oscillation is."
+    },
+    "5.2": {
+      "title": "Band positions from MD",
+      "needs": [
+        "peaks"
+      ],
+      "tests": [
+        {
+          "value": "peaks['bend']",
+          "answer": 651.2838959,
+          "tol": 4,
+          "hint": "<code>peaks[band] = nu[w][np.argmax(I[w])]</code>: the wavenumber (inside the window) where the intensity is largest.",
+          "wrong": [
+            {
+              "when": "isinstance(value, (int, np.integer))",
+              "feedback": "That is an index (a position in the window). Use it to pick the wavenumber: <code>nu[w][np.argmax(I[w])]</code>."
+            },
+            {
+              "when": "value < 1",
+              "feedback": "That looks like an intensity, not a wavenumber: use <code>nu[w][...]</code>."
+            }
+          ]
+        },
+        {
+          "value": "peaks['asymmetric stretch']",
+          "answer": 2480.882958,
+          "tol": 4,
+          "hint": "The asymmetric stretch peak lies near the harmonic 2470 cm⁻¹."
+        }
+      ],
+      "ok": "Bands within a few cm⁻¹ of the harmonic sticks, from a simulation that knows nothing about harmonic oscillators."
+    },
+    "5.3d": {
+      "title": "Discussion: MD vs harmonic",
+      "open": "Question 5.3 Discussion",
+      "min_chars": 60
+    },
+    "6.1": {
+      "title": "P–R branch separation",
+      "needs": [
+        "dPR_expected"
+      ],
+      "tests": [
+        {
+          "value": "dPR_expected",
+          "answer": 25.52730303,
+          "tol": 0.1,
+          "hint": "<code>dPR_expected = 2.36 * np.sqrt(0.39 * 300)</code>, in cm⁻¹.",
+          "wrong": [
+            {
+              "when": "abs(value - 2.36 * 0.39 * 300) < 1",
+              "feedback": "Take the square root of B·T: <code>2.36 * np.sqrt(0.39 * 300)</code>."
+            }
+          ]
+        }
+      ],
+      "ok": "Rotation spreads each band into two branches, about 25 cm⁻¹ apart at room temperature."
+    },
+    "7.1d": {
+      "title": "Discussion: a hot molecule",
+      "open": "Question 7.1 Discussion",
+      "min_chars": 60
+    },
+    "abstract": {
+      "title": "Abstract",
+      "open": "Your abstract goes in the cell below",
+      "min_chars": 400
+    },
+    "9c": {
+      "title": "Conclusions",
+      "open": "Question 9. Conclusions",
+      "min_chars": 300
+    },
+    "10d": {
+      "title": "Reflection",
+      "open": "**Question 10.**",
+      "min_chars": 60
+    }
+  }
+}
